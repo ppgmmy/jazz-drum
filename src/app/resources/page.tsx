@@ -13,7 +13,7 @@ const LEVEL_ORDER: ChartLevel[] = ["入門", "進階", "挑戰"];
 export const metadata = {
   title: "資源庫｜Soft Ride 鼓譜",
   description:
-    "每首都有全曲結構鼓譜：鼓聲配鋼琴引導旋律練習。Billie Jean、晴天、海闊天空、So What、Take Five…",
+    "每首都有全曲結構鼓譜：鼓聲配輕聲琴（代替歌聲）練習。Billie Jean、晴天、海闊天空、So What、Take Five…",
 };
 
 export default function ResourcesPage() {

@@ -27,7 +27,7 @@ type ChartPlayerProps = {
   songStartSec?: number;
   songEndSec?: number;
   sectionId?: string;
-  /** 歌曲 slug，揀對應鋼琴引導旋律 */
+  /** 歌曲 slug，揀對應「琴代歌聲」旋律 */
   melodyId?: string;
   /**
    * 分段練習：到段尾必停，唔准循環過龍。
@@ -274,7 +274,7 @@ export function ChartPlayer({
         }}
         className="rounded-full bg-brass px-5 py-2 text-sm font-medium text-ink transition hover:bg-brass-hot"
       >
-        {playing ? "停止" : withMelody ? "播鼓＋琴" : "播放鼓聲"}
+        {playing ? "停止" : withMelody ? "播鼓＋歌聲（琴）" : "播放鼓聲"}
       </button>
 
       <button
@@ -319,7 +319,7 @@ export function ChartPlayer({
           onChange={(event) => setWithMelody(event.target.checked)}
           className="accent-[var(--brass)]"
         />
-        鋼琴旋律
+        琴代歌聲
       </label>
 
       <p className="font-mono text-xs text-brass">
@@ -330,8 +330,8 @@ export function ChartPlayer({
       <p className="w-full text-xs text-muted sm:w-auto sm:flex-1 sm:text-right">
         {withMelody
           ? sectionBound
-            ? "分段練習：鼓＋鋼琴引導旋律一齊播，到段尾即停——唔會硬夾原曲影片。"
-            : "鼓聲配鋼琴引導旋律（教學用 tonal outline），方便對住段落練。"
+            ? "分段練習：輕聲琴＝歌聲位，方便對唱句；到段尾即停，唔搶鼓、唔硬夾原曲。"
+            : "輕聲琴代替歌聲線條，對住「唱到邊度」練鼓，音量刻意壓低唔搶鼓。"
           : "只播這段鼓譜的鼓聲，游標會跟著走，方便對譜練習。"}
       </p>
 

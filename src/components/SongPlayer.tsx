@@ -72,7 +72,7 @@ export function SongPlayer({ youtubeId, title, artist }: SongPlayerProps) {
           </h2>
           <p className="mt-2 text-sm text-muted">
             {artist} — {title}
-            （參考原曲用；播鼓譜時會用鋼琴模擬旋律，唔會硬夾影片聲）
+            （參考聽歌用；播鼓譜時用輕聲琴代替歌聲，唔搶鼓、唔硬夾影片）
           </p>
         </div>
         <a

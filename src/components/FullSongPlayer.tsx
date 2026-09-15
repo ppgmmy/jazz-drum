@@ -211,7 +211,7 @@ export function FullSongPlayer({
 
     setSyncLabel(
       withMelodyRef.current
-        ? `全曲 · 鼓＋琴 ${formatClock(songNow)}`
+        ? `全曲 · 鼓＋歌聲 ${formatClock(songNow)}`
         : `全曲 · 只鼓 ${formatClock(songNow)}`,
     );
   };
@@ -230,7 +230,9 @@ export function FullSongPlayer({
       activeIndexRef.current = 0;
       onActiveRef.current(0);
       onPlayheadRef.current(0);
-      setSyncLabel(withMelodyRef.current ? "全曲 · 鼓＋琴" : "全曲 · 只鼓");
+      setSyncLabel(
+        withMelodyRef.current ? "全曲 · 鼓＋歌聲（琴）" : "全曲 · 只鼓",
+      );
 
       scheduleAhead();
       timerRef.current = window.setInterval(scheduleAhead, 25);
@@ -276,7 +278,11 @@ export function FullSongPlayer({
           }}
           className="rounded-full bg-brass px-5 py-2 text-sm font-medium text-ink transition hover:bg-brass-hot"
         >
-          {playing ? "停止" : withMelody ? "全曲鼓＋琴" : "全曲播鼓"}
+          {playing
+            ? "停止"
+            : withMelody
+              ? "全曲鼓＋歌聲（琴）"
+              : "全曲播鼓"}
         </button>
 
         <button
@@ -311,7 +317,7 @@ export function FullSongPlayer({
             onChange={(event) => setWithMelody(event.target.checked)}
             className="accent-[var(--brass)]"
           />
-          鋼琴旋律
+          琴代歌聲
           <span className="font-mono text-xs text-brass">
             {formatClock(songStartSec)}–{formatClock(songEndSec)}
           </span>
@@ -325,7 +331,7 @@ export function FullSongPlayer({
       </div>
 
       <p className="mt-2 text-xs text-muted">
-        由頭一路打到尾：鼓聲配鋼琴引導旋律（唔會硬夾 YouTube
+        由頭一路打到尾：輕聲琴＝歌聲位（唔搶鼓、唔硬夾 YouTube
         原曲），下面譜會跟住跳去而家嗰段。
       </p>
 

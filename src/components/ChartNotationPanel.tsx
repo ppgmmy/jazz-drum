@@ -21,7 +21,7 @@ type ChartNotationPanelProps = {
   songStartSec?: number;
   songEndSec?: number;
   sectionId?: string;
-  /** 歌曲 slug，揀鋼琴引導旋律 */
+  /** 歌曲 slug，揀「琴代歌聲」旋律 */
   melodyId?: string;
   /** 全曲模式：隱藏每段自己嘅播放器 */
   hidePlayer?: boolean;
