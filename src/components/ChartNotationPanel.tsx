@@ -21,6 +21,12 @@ type ChartNotationPanelProps = {
   songStartSec?: number;
   songEndSec?: number;
   sectionId?: string;
+  /** 全曲模式：隱藏每段自己嘅播放器 */
+  hidePlayer?: boolean;
+  /** 由外層（全曲播放）注入游標 */
+  externalPlayhead?: number | null;
+  /** 分段練習：跟歌到段尾必停 */
+  strictSection?: boolean;
 };
 
 export function ChartNotationPanel({
@@ -35,9 +41,13 @@ export function ChartNotationPanel({
   songStartSec,
   songEndSec,
   sectionId,
+  hidePlayer = false,
+  externalPlayhead = null,
+  strictSection = true,
 }: ChartNotationPanelProps) {
   const [mode, setMode] = useState<NotationMode>("staff");
   const [playheadIndex, setPlayheadIndex] = useState<number | null>(null);
+  const activePlayhead = hidePlayer ? externalPlayhead : playheadIndex;
   const staffId = `${svgIdBase}-staff`;
   const gridId = `${svgIdBase}-grid`;
   const activeId = mode === "staff" ? staffId : gridId;
@@ -80,16 +90,19 @@ export function ChartNotationPanel({
         <ChartActions title={downloadTitle} chartSvgId={activeId} />
       </div>
 
-      <ChartPlayer
-        pattern={pattern}
-        tempo={tempo}
-        voiceLabels={voiceLabels}
-        playheadIndex={playheadIndex}
-        onPlayheadChange={setPlayheadIndex}
-        songStartSec={songStartSec}
-        songEndSec={songEndSec}
-        sectionId={sectionId}
-      />
+      {!hidePlayer ? (
+        <ChartPlayer
+          pattern={pattern}
+          tempo={tempo}
+          voiceLabels={voiceLabels}
+          playheadIndex={playheadIndex}
+          onPlayheadChange={setPlayheadIndex}
+          songStartSec={songStartSec}
+          songEndSec={songEndSec}
+          sectionId={sectionId}
+          strictSection={strictSection}
+        />
+      ) : null}
 
       <div className="rounded-[1.5rem] border border-white/10 bg-ivory/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5 print:border-0 print:bg-white print:p-0 print:shadow-none">
         {mode === "staff" ? (
@@ -101,7 +114,7 @@ export function ChartNotationPanel({
             tempo={tempo}
             pattern={pattern}
             voiceLabels={voiceLabels}
-            playheadIndex={playheadIndex}
+            playheadIndex={activePlayhead}
           />
         ) : (
           <DrumChartView
@@ -112,7 +125,7 @@ export function ChartNotationPanel({
             tempo={tempo}
             pattern={pattern}
             voiceLabels={voiceLabels}
-            playheadIndex={playheadIndex}
+            playheadIndex={activePlayhead}
           />
         )}
       </div>

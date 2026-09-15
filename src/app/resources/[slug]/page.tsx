@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChartNotationPanel } from "@/components/ChartNotationPanel";
+import { SongChartWorkspace } from "@/components/SongChartWorkspace";
 import { SongPlayer } from "@/components/SongPlayer";
 import { SongSyncProvider } from "@/components/SongSyncProvider";
 import { SiteFooter, SiteHeader } from "@/components/SiteSections";
@@ -108,60 +108,19 @@ export default async function ChartPage({ params }: PageProps) {
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted print:hidden">
                 共 {chart.sections.length}{" "}
-                段，按歌曲結構順序排列；多數段落為 8
-                小節可循環樂句（含 ghost／fill）。預設五線鼓譜，可切格子譜。撳「播鼓＋歌」＝鼓聲同影片歌聲一齊出，聽住就知打到邊段。
+                段。可揀「全曲直落」由頭打到尾，或者「分段練習」逐段跟歌（到段尾即停）。
               </p>
 
-              <div className="mt-8 space-y-12">
-                {chart.sections.map((section, index) => {
-                  const svgIdBase = `chart-${chart.slug}-${index}`;
-                  const bars = section.pattern.bars;
-                  return (
-                    <article
-                      key={section.label}
-                      id={`section-${index + 1}`}
-                      className="scroll-mt-28"
-                    >
-                      <div className="mb-4">
-                        <p className="font-mono text-xs tracking-[0.18em] text-brass">
-                          {String(index + 1).padStart(2, "0")} /{" "}
-                          {String(chart.sections.length).padStart(2, "0")} ·{" "}
-                          {bars} 小節
-                          {section.startSec !== undefined
-                            ? ` · 影片 ${Math.floor(section.startSec / 60)}:${String(
-                                Math.floor(section.startSec % 60),
-                              ).padStart(2, "0")}`
-                            : ""}
-                        </p>
-                        <h3 className="mt-1 font-display text-xl text-brass-hot sm:text-2xl">
-                          {section.label}
-                        </h3>
-                        {section.description ? (
-                          <p className="mt-2 max-w-2xl text-sm text-muted">
-                            {section.description}
-                          </p>
-                        ) : null}
-                      </div>
-                      <ChartNotationPanel
-                        svgIdBase={svgIdBase}
-                        downloadTitle={`${chart.title}-${section.label}`}
-                        title={chart.title}
-                        sectionLabel={section.label}
-                        meter={chart.meter}
-                        tempo={chart.tempo}
-                        pattern={section.pattern}
-                        voiceLabels={chart.voiceLabels}
-                        songStartSec={
-                          chart.youtubeId ? section.startSec : undefined
-                        }
-                        songEndSec={
-                          chart.youtubeId ? section.endSec : undefined
-                        }
-                        sectionId={`${chart.slug}-${index}`}
-                      />
-                    </article>
-                  );
-                })}
+              <div className="mt-8">
+                <SongChartWorkspace
+                  slug={chart.slug}
+                  title={chart.title}
+                  meter={chart.meter}
+                  tempo={chart.tempo}
+                  youtubeId={chart.youtubeId || undefined}
+                  voiceLabels={chart.voiceLabels}
+                  sections={chart.sections}
+                />
               </div>
             </section>
 
@@ -169,8 +128,8 @@ export default async function ChartPage({ params }: PageProps) {
               <h2 className="font-display text-2xl text-ivory">怎麼打完整首</h2>
               <ol className="mt-5 space-y-4 text-sm leading-relaxed text-muted">
                 <li>1. 先聽完整首歌，對照上方「全曲結構」記住進出位置。</li>
-                <li>2. 逐段練熟：勾「跟歌聲」——鼓會鎖住影片時間軸；播到邊度鼓就打到邊度，段落結束自動停。</li>
-                <li>3. 再開影片由第 1 段順打到最後，中間只換譜不換感覺。</li>
+                <li>2. 「分段練習」：跟歌聲播到段尾即停，唔會過龍。想一次聽晒就用「全曲直落」。</li>
+                <li>3. 「全曲直落」：一個掣由頭打到尾，譜會跟住跳去而家嗰段。</li>
                 <li>4. 整首串連：寧可少花，也要穩在 pocket。</li>
               </ol>
             </section>

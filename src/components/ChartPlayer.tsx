@@ -25,6 +25,11 @@ type ChartPlayerProps = {
   /** 呢段喺影片大概結束秒數；跟歌超過就停鼓，避免打入下一段 */
   songEndSec?: number;
   sectionId?: string;
+  /**
+   * 分段練習：跟歌時唔准循環過段尾。
+   * 預設喺有 songEndSec 時開啟。
+   */
+  strictSection?: boolean;
 };
 
 /** YouTube seek／起播延遲補償 */
@@ -39,6 +44,7 @@ export function ChartPlayer({
   songStartSec,
   songEndSec,
   sectionId,
+  strictSection,
 }: ChartPlayerProps) {
   const songSync = useOptionalSongSync();
   const audioRef = useRef<AudioContext | null>(null);
@@ -69,6 +75,8 @@ export function ChartPlayer({
   const cells = totalCells(pattern);
   const chartKey = `${tempo}|${pattern.bars}|${pattern.beatsPerBar}|${pattern.perBeat}`;
   const canFollowSong = songStartSec !== undefined && Boolean(songSync);
+  const sectionBound =
+    strictSection ?? (songEndSec !== undefined && songStartSec !== undefined);
 
   patternRef.current = pattern;
   bpmRef.current = bpm;
@@ -197,15 +205,18 @@ export function ChartPlayer({
       return;
     }
 
-    if (!loopRef.current && elapsed >= patternDur) {
+    // 分段練習：只喺呢段時間窗入面打；鼓型可循環，但一到 endSec 就停
+    const allowGrooveLoop = loopRef.current || sectionBound;
+
+    if (!allowGrooveLoop && elapsed >= patternDur) {
       stopPlayback({ pauseSong: true });
       return;
     }
 
-    const loopIndex = loopRef.current
+    const loopIndex = allowGrooveLoop
       ? Math.max(0, Math.floor(elapsed / patternDur))
       : 0;
-    const posInPattern = loopRef.current
+    const posInPattern = allowGrooveLoop
       ? ((elapsed % patternDur) + patternDur) % patternDur
       : Math.max(0, elapsed);
 
@@ -227,7 +238,7 @@ export function ChartPlayer({
 
     for (let guard = 0; guard < total * 3; guard += 1) {
       if (cell >= total) {
-        if (!loopRef.current) break;
+        if (!allowGrooveLoop) break;
         cell = 0;
         loopCursor += 1;
       }
@@ -316,9 +327,9 @@ export function ChartPlayer({
     bpmRef.current = nextBpm;
     setBpm(nextBpm);
     setWithSong(songStartSec !== undefined);
-    setLoop(songStartSec === undefined);
+    setLoop(songStartSec === undefined || !(strictSection ?? songEndSec !== undefined));
     setSyncLabel(null);
-  }, [chartKey, tempo, songStartSec, songEndSec]);
+  }, [chartKey, tempo, songStartSec, songEndSec, strictSection]);
 
   const bar =
     playheadIndex === null
@@ -373,7 +384,11 @@ export function ChartPlayer({
           onChange={(event) => setLoop(event.target.checked)}
           className="accent-[var(--brass)]"
         />
-        {canFollowSong && withSong ? "鼓型循環（歌繼續）" : "循環"}
+        {canFollowSong && withSong
+          ? sectionBound
+            ? "段內鼓型循環（到段尾必停）"
+            : "鼓型循環（歌繼續）"
+          : "循環"}
       </label>
 
       {canFollowSong ? (
@@ -384,7 +399,7 @@ export function ChartPlayer({
             disabled={playing}
             onChange={(event) => {
               setWithSong(event.target.checked);
-              if (event.target.checked) setLoop(true);
+              if (event.target.checked && sectionBound) setLoop(false);
             }}
             className="accent-[var(--brass)]"
           />
@@ -411,7 +426,9 @@ export function ChartPlayer({
 
       <p className="w-full text-xs text-muted sm:w-auto sm:flex-1 sm:text-right">
         {canFollowSong && withSong
-          ? "鼓聲鎖住影片時間軸：播到邊度鼓就打到邊度，唔會越打越甩拍。"
+          ? sectionBound
+            ? "分段練習：鼓＋歌一齊由呢段開始，一到段尾即停——唔會播過龍。"
+            : "鼓聲鎖住影片時間軸：播到邊度鼓就打到邊度，唔會越打越甩拍。"
           : "只播這段鼓譜的鼓聲，游標會跟著走，方便對譜練習。"}
       </p>
 
