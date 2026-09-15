@@ -40,104 +40,104 @@ const PROFILES: Record<string, MelodyProfile> = {
     rootMidi: 57,
     scale: DORIAN,
     phrase: [4, 4, 3, 2, 0, -1, 4, 3, 2, 0, -1, -1, 5, 4, 3, 2],
-    softGain: 0.22,
+    softGain: 0.78,
   },
   "take-five": {
     rootMidi: 60,
     scale: MINOR,
     phrase: [0, 2, 4, 2, 0, 0, 2, 4, 5, 4],
-    softGain: 0.22,
+    softGain: 0.78,
   },
   "blue-train": {
     rootMidi: 58,
     scale: BLUES,
     phrase: [0, -1, 2, 3, 4, 3, 2, 0, 4, -1, 3, 2, 0, -1, -1, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   "all-blues": {
     rootMidi: 59,
     scale: MIXOLYDIAN,
     phrase: [0, -1, 2, 4, 5, 4, 2, 0, 4, -1, 5, 4, 2, 0, -1, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   "satin-doll": {
     rootMidi: 60,
     scale: MAJOR,
     phrase: [2, 4, 5, 4, 2, 0, 1, 0, 4, 5, 7, 5, 4, 2, 0, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   "autumn-leaves": {
     rootMidi: 62,
     scale: MINOR,
     phrase: [4, 3, 2, 0, 1, 0, -1, -1, 5, 4, 3, 1, 2, 0, -1, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   moanin: {
     rootMidi: 58,
     scale: MINOR,
     phrase: [0, 0, 2, 3, 5, 3, 2, 0, 0, -1, 3, 2, 0, -1, -1, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   "a-train": {
     rootMidi: 60,
     scale: MAJOR,
     phrase: [0, 2, 4, 5, 7, 5, 4, 2, 4, 5, 4, 2, 0, -1, -1, -1],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   // Pop vocal hooks — stylized singable outlines
   "billie-jean": {
     rootMidi: 62,
     scale: MINOR,
     phrase: [0, -1, 0, 2, 3, 2, 0, -1, 4, 3, 2, 0, 2, 0, -1, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "seven-nation-army": {
     rootMidi: 52,
     scale: PENT_MIN,
     phrase: [0, -1, 0, 3, 4, 3, 0, -1, 0, -1, 0, 3, 5, 4, 3, 0],
-    softGain: 0.2,
+    softGain: 0.72,
   },
   "smells-like-teen-spirit": {
     rootMidi: 60,
     scale: MINOR,
     phrase: [0, -1, -1, 0, 3, -1, 5, 4, 0, -1, -1, 0, 3, 5, 4, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "another-one-bites-the-dust": {
     rootMidi: 55,
     scale: MINOR,
     phrase: [0, -1, -1, 0, -1, -1, 0, 2, 3, -1, 2, 0, -1, -1, -1, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "uptown-funk": {
     rootMidi: 60,
     scale: MIXOLYDIAN,
     phrase: [0, -1, 4, 5, 4, 2, 0, -1, 0, 2, 4, 5, 7, 5, 4, 2],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "we-will-rock-you": {
     rootMidi: 60,
     scale: MAJOR,
     phrase: [0, -1, -1, 2, 4, -1, 5, 4, 0, -1, -1, 2, 4, 5, 4, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "beat-it": {
     rootMidi: 62,
     scale: MINOR,
     phrase: [0, 2, 3, 5, 3, 2, 0, -1, 4, 3, 2, 0, 2, 0, -1, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "qing-tian": {
     rootMidi: 64,
     scale: MAJOR,
     phrase: [0, 2, 4, 5, 4, 2, 0, 2, 5, 4, 2, 0, 1, 0, -1, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
   "hai-kuo-tian-kong": {
     rootMidi: 59,
     scale: MAJOR,
     phrase: [0, 2, 4, 5, 7, 5, 4, 2, 4, 5, 4, 2, 0, -1, -1, -1],
-    softGain: 0.18,
+    softGain: 0.68,
   },
 };
 
@@ -145,14 +145,14 @@ const FALLBACK_JAZZ: MelodyProfile = {
   rootMidi: 60,
   scale: DORIAN,
   phrase: [0, 2, 4, 3, 2, 0, -1, -1, 5, 4, 3, 2, 0, -1, -1, -1],
-  softGain: 0.2,
+  softGain: 0.72,
 };
 
 const FALLBACK_POP: MelodyProfile = {
   rootMidi: 60,
   scale: MINOR,
   phrase: [0, -1, 2, 3, 5, 3, 2, 0, 4, 3, 2, 0, -1, -1, -1, -1],
-  softGain: 0.18,
+  softGain: 0.68,
 };
 
 export function getMelodyProfile(
@@ -198,7 +198,7 @@ export function melodyNoteAtCell(
 
   return {
     midi: midiFromDegree(profile, degree),
-    velocity: (beat === 0 ? 0.42 : 0.3) * profile.softGain,
+    velocity: (beat === 0 ? 0.55 : 0.42) * profile.softGain,
     durationBeats: hold,
   };
 }
@@ -214,16 +214,16 @@ export function playPianoNote(
   ctx: AudioContext,
   when: number,
   midi: number,
-  velocity = 0.08,
+  velocity = 0.28,
   durationSec = 0.55,
 ) {
   const freq = midiToFreq(midi);
-  // 刻意好細 peak，唔同鼓搶
-  const peak = Math.max(0.008, Math.min(0.09, velocity * 0.55));
+  // 歌聲位要清楚聽到，但仍低過鼓（peak 上限約 0.28）
+  const peak = Math.max(0.04, Math.min(0.28, velocity * 0.9));
   const master = ctx.createGain();
   master.gain.setValueAtTime(0.0001, when);
-  master.gain.exponentialRampToValueAtTime(peak, when + 0.03);
-  master.gain.exponentialRampToValueAtTime(peak * 0.55, when + 0.18);
+  master.gain.exponentialRampToValueAtTime(peak, when + 0.02);
+  master.gain.exponentialRampToValueAtTime(peak * 0.62, when + 0.16);
   master.gain.exponentialRampToValueAtTime(0.0001, when + durationSec);
   master.connect(ctx.destination);
 
@@ -231,12 +231,12 @@ export function playPianoNote(
   fund.type = "sine";
   fund.frequency.setValueAtTime(freq, when);
 
-  // 極輕第二泛音，似人聲／軟琴，唔刺耳
+  // 第二泛音稍強，令旋律線更易聽清
   const partial = ctx.createOscillator();
   partial.type = "sine";
   partial.frequency.setValueAtTime(freq * 2, when);
   const partialGain = ctx.createGain();
-  partialGain.gain.setValueAtTime(peak * 0.14, when);
+  partialGain.gain.setValueAtTime(peak * 0.22, when);
   partialGain.gain.exponentialRampToValueAtTime(0.0001, when + durationSec * 0.85);
 
   // 輕微 vibrato，更似唱歌
