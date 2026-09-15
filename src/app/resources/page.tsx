@@ -13,7 +13,7 @@ const LEVEL_ORDER: ChartLevel[] = ["入門", "進階", "挑戰"];
 export const metadata = {
   title: "資源庫｜Soft Ride 鼓譜",
   description:
-    "先聽成首歌，再練分段鼓譜。流行與爵士經典：Billie Jean、晴天、海闊天空、So What、Take Five…",
+    "每首都有全曲結構鼓譜：按前奏／主歌／副歌順序跟歌打完整首。Billie Jean、晴天、海闊天空、So What、Take Five…",
 };
 
 export default function ResourcesPage() {
@@ -40,8 +40,8 @@ export default function ResourcesPage() {
             資源庫：歌曲鼓譜
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-            每首歌都有完整影片＋細分鼓譜（多為 4 小節、十六分格，含 ghost 與
-            fill）。先聽成首，再對主歌／副歌／轉折練習。
+            每首都有完整影片＋全曲鼓譜：依歌曲結構分段（多數 8
+            小節樂句），由頭打到尾就是整首。
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3 print:hidden">

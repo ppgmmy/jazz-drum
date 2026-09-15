@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
   return {
     title: `${chart.title} 鼓譜｜Soft Ride`,
-    description: `${chart.artist} — ${chart.title}：先聽成首歌，再分段練鼓譜。`,
+    description: `${chart.artist} — ${chart.title}：全曲結構鼓譜，按段落順序跟歌打完整首。`,
   };
 }
 
@@ -74,19 +74,24 @@ export default async function ChartPage({ params }: PageProps) {
 
           <section className="mt-10 print:hidden">
             <p className="font-mono text-xs tracking-[0.24em] text-brass uppercase">
-              Song Form
+              Full Song Roadmap
             </p>
-            <h2 className="mt-2 font-display text-2xl text-ivory">歌曲結構</h2>
+            <h2 className="mt-2 font-display text-2xl text-ivory">全曲結構</h2>
+            <p className="mt-3 max-w-2xl text-sm text-muted">
+              由上到下＝整首歌打法。點段落可跳到對應鼓譜。
+            </p>
             <ol className="mt-5 flex flex-wrap gap-2">
               {chart.form.map((part, index) => (
-                <li
-                  key={`${part}-${index}`}
-                  className="border border-white/15 px-3 py-1.5 text-sm text-muted"
-                >
-                  <span className="mr-2 font-mono text-brass">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  {part}
+                <li key={`${part}-${index}`}>
+                  <a
+                    href={`#section-${index + 1}`}
+                    className="block border border-white/15 px-3 py-1.5 text-sm text-muted transition hover:border-brass/50 hover:text-brass-hot"
+                  >
+                    <span className="mr-2 font-mono text-brass">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {part}
+                  </a>
                 </li>
               ))}
             </ol>
@@ -94,23 +99,35 @@ export default async function ChartPage({ params }: PageProps) {
 
           <section className="mt-12">
             <p className="font-mono text-xs tracking-[0.24em] text-brass uppercase print:hidden">
-              Drum Charts
+              Full Song Charts
             </p>
             <h2 className="mt-2 font-display text-2xl text-ivory sm:text-3xl">
-              分段鼓譜
+              全曲鼓譜
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted print:hidden">
-              預設為標準五線鼓譜（Percussion）；也可切換格子譜。多數段落 4
-              小節、十六分細分（含 ghost／fill）。手機請橫向捲動。
+              共 {chart.sections.length}{" "}
+              段，按歌曲結構順序排列；多數段落為 8
+              小節可循環樂句（含 ghost／fill）。預設五線鼓譜，可切格子譜。跟影片由第
+              1 段打到最後＝整首。
             </p>
 
             <div className="mt-8 space-y-12">
               {chart.sections.map((section, index) => {
                 const svgIdBase = `chart-${chart.slug}-${index}`;
+                const bars = section.pattern.bars;
                 return (
-                  <article key={section.label} className="scroll-mt-28">
+                  <article
+                    key={section.label}
+                    id={`section-${index + 1}`}
+                    className="scroll-mt-28"
+                  >
                     <div className="mb-4">
-                      <h3 className="font-display text-xl text-brass-hot sm:text-2xl">
+                      <p className="font-mono text-xs tracking-[0.18em] text-brass">
+                        {String(index + 1).padStart(2, "0")} /{" "}
+                        {String(chart.sections.length).padStart(2, "0")} · {bars}{" "}
+                        小節
+                      </p>
+                      <h3 className="mt-1 font-display text-xl text-brass-hot sm:text-2xl">
                         {section.label}
                       </h3>
                       {section.description ? (
@@ -136,12 +153,12 @@ export default async function ChartPage({ params }: PageProps) {
           </section>
 
           <section className="mt-12 border-t border-white/10 pt-8 print:hidden">
-            <h2 className="font-display text-2xl text-ivory">怎麼跟歌練</h2>
+            <h2 className="font-display text-2xl text-ivory">怎麼打完整首</h2>
             <ol className="mt-5 space-y-4 text-sm leading-relaxed text-muted">
-              <li>1. 先完整聽一次，記住前奏／主歌／副歌何時進來。</li>
-              <li>2. 只練對應段落的鼓譜，循環到能對上影片。</li>
-              <li>3. 再開歌，從該段切入實打。</li>
-              <li>4. 整首串起來：寧可少花，也要穩在 pocket。</li>
+              <li>1. 先聽完整首歌，對照上方「全曲結構」記住進出位置。</li>
+              <li>2. 逐段練熟（每段 8 小節可循環），再接下一段。</li>
+              <li>3. 開影片由第 1 段順打到最後，中間只換譜不換感覺。</li>
+              <li>4. 整首串連：寧可少花，也要穩在 pocket。</li>
             </ol>
           </section>
         </div>
