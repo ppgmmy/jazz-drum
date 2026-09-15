@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DRUM_CHARTS, type ChartLevel } from "@/data/charts";
+import { DRUM_CHARTS, GENRE_LABELS, type ChartLevel } from "@/data/charts";
 
 export function SiteHeader() {
   return (
@@ -164,7 +164,10 @@ const LEVEL_STYLE: Record<ChartLevel, string> = {
 };
 
 export function ResourcesTeaser() {
-  const preview = DRUM_CHARTS.slice(0, 4);
+  const preview = [
+    ...DRUM_CHARTS.filter((chart) => chart.genre === "pop").slice(0, 3),
+    ...DRUM_CHARTS.filter((chart) => chart.genre === "jazz").slice(0, 2),
+  ];
 
   return (
     <section id="charts" className="mx-auto max-w-5xl px-5 pb-24 pt-8 sm:px-8">
@@ -177,7 +180,7 @@ export function ResourcesTeaser() {
             資源庫：歌曲鼓譜
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-            So What、Take Five、Blue Train… 把經典 groove 變成可練、可印的譜。
+            流行經典與爵士 groove 都有：Billie Jean、晴天、海闊天空、So What…
           </p>
         </div>
         <Link
@@ -206,7 +209,7 @@ export function ResourcesTeaser() {
               <span
                 className={`font-mono text-xs tracking-[0.18em] uppercase ${LEVEL_STYLE[chart.level]}`}
               >
-                {chart.level}
+                {GENRE_LABELS[chart.genre]} · {chart.level}
               </span>
             </Link>
           </li>

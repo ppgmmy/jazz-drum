@@ -81,7 +81,7 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
               fontFamily="var(--font-body), sans-serif"
               fontSize="12"
             >
-              {VOICE_LABELS[voice]}
+              {chart.voiceLabels?.[voice] ?? VOICE_LABELS[voice]}
             </text>
             <line
               x1={labelWidth}
