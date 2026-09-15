@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChartPattern, DrumVoice } from "@/data/charts";
 import {
   createNoiseBuffer,
@@ -32,15 +32,44 @@ export function ChartPlayer({
   const timerRef = useRef<number | null>(null);
   const nextCellRef = useRef(0);
   const nextTimeRef = useRef(0);
+  const playingRef = useRef(false);
+  const loopRef = useRef(true);
+  const bpmRef = useRef(parseTempoBpm(tempo));
+  const patternRef = useRef(pattern);
+  const rideIsHatRef = useRef(false);
+  const onPlayheadChangeRef = useRef(onPlayheadChange);
 
-  const defaultBpm = parseTempoBpm(tempo);
-  const [bpm, setBpm] = useState(defaultBpm);
+  const [bpm, setBpm] = useState(() => parseTempoBpm(tempo));
   const [playing, setPlaying] = useState(false);
   const [loop, setLoop] = useState(true);
-  const cells = totalCells(pattern);
-  const rideIsHat = /hi-?hat|踩鑔|鑔/i.test(voiceLabels?.ride ?? "");
+  const [error, setError] = useState<string | null>(null);
 
-  const ensureAudio = useEffectEvent(async () => {
+  const cells = totalCells(pattern);
+  const chartKey = `${tempo}|${pattern.bars}|${pattern.beatsPerBar}|${pattern.perBeat}`;
+
+  patternRef.current = pattern;
+  bpmRef.current = bpm;
+  loopRef.current = loop;
+  playingRef.current = playing;
+  onPlayheadChangeRef.current = onPlayheadChange;
+  rideIsHatRef.current = /hi-?hat|踩鑔|鑔/i.test(voiceLabels?.ride ?? "");
+
+  const clearTimer = () => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const stopPlayback = () => {
+    clearTimer();
+    playingRef.current = false;
+    setPlaying(false);
+    nextCellRef.current = 0;
+    onPlayheadChangeRef.current(null);
+  };
+
+  const ensureAudio = async () => {
     if (!audioRef.current) {
       const Ctx =
         window.AudioContext ||
@@ -53,82 +82,87 @@ export function ChartPlayer({
       await audioRef.current.resume();
     }
     return audioRef.current;
-  });
+  };
 
-  const clearTimer = useEffectEvent(() => {
-    if (timerRef.current !== null) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  });
-
-  const stop = useEffectEvent(() => {
-    clearTimer();
-    setPlaying(false);
-    nextCellRef.current = 0;
-    onPlayheadChange(null);
-  });
-
-  const scheduleAhead = useEffectEvent(() => {
+  const scheduleAhead = () => {
     const ctx = audioRef.current;
     const noise = noiseRef.current;
-    if (!ctx || !noise) return;
+    const currentPattern = patternRef.current;
+    if (!ctx || !noise || !playingRef.current) return;
 
-    const step = secondsPerCell(pattern, bpm);
+    const total = totalCells(currentPattern);
+    const step = secondsPerCell(currentPattern, bpmRef.current);
     const horizon = ctx.currentTime + 0.12;
 
     while (nextTimeRef.current < horizon) {
       const cellIndex = nextCellRef.current;
-      if (cellIndex >= cells) {
-        if (loop) {
+      if (cellIndex >= total) {
+        if (loopRef.current) {
           nextCellRef.current = 0;
           continue;
         }
-        stop();
+        stopPlayback();
         return;
       }
 
       const when = nextTimeRef.current;
-      const hits = hitsAtCell(pattern, cellIndex, rideIsHat);
+      const hits = hitsAtCell(currentPattern, cellIndex, rideIsHatRef.current);
       for (const hit of hits) {
         playPad(ctx, getPad(hit.padId), noise, when, hit.velocity);
       }
 
-      // 視覺游標略提前對齊發聲
       const delayMs = Math.max(0, (when - ctx.currentTime) * 1000);
+      const scheduledCell = cellIndex;
       window.setTimeout(() => {
-        onPlayheadChange(cellIndex);
+        if (!playingRef.current) return;
+        onPlayheadChangeRef.current(scheduledCell);
       }, delayMs);
 
       nextCellRef.current = cellIndex + 1;
       nextTimeRef.current = when + step;
     }
-  });
+  };
 
-  const start = useEffectEvent(async () => {
-    const ctx = await ensureAudio();
-    clearTimer();
-    nextCellRef.current = playheadIndex ?? 0;
-    if (nextCellRef.current >= cells) nextCellRef.current = 0;
-    nextTimeRef.current = ctx.currentTime + 0.06;
-    setPlaying(true);
-    scheduleAhead();
-    timerRef.current = window.setInterval(() => scheduleAhead(), 25);
-  });
+  const startPlayback = async () => {
+    setError(null);
+    try {
+      const ctx = await ensureAudio();
+      clearTimer();
+      nextCellRef.current =
+        playheadIndex !== null && playheadIndex < cells ? playheadIndex : 0;
+      nextTimeRef.current = ctx.currentTime + 0.05;
+      playingRef.current = true;
+      setPlaying(true);
+      scheduleAhead();
+      timerRef.current = window.setInterval(scheduleAhead, 25);
+    } catch (err) {
+      playingRef.current = false;
+      setPlaying(false);
+      setError(err instanceof Error ? err.message : "無法啟動音訊");
+    }
+  };
 
   useEffect(() => {
     return () => {
       clearTimer();
-      void audioRef.current?.close();
+      const ctx = audioRef.current;
       audioRef.current = null;
+      noiseRef.current = null;
+      if (ctx) void ctx.close();
     };
-  }, [clearTimer]);
+  }, []);
 
-  // 換段／換譜時停掉
+  // 只在換譜／換速度時重設；唔好依賴每次 render 都會變嘅 callback
   useEffect(() => {
-    stop();
-    setBpm(parseTempoBpm(tempo));
-  }, [pattern, tempo, stop]);
+    clearTimer();
+    playingRef.current = false;
+    setPlaying(false);
+    nextCellRef.current = 0;
+    onPlayheadChangeRef.current(null);
+    const nextBpm = parseTempoBpm(tempo);
+    bpmRef.current = nextBpm;
+    setBpm(nextBpm);
+  }, [chartKey, tempo]);
 
   const bar =
     playheadIndex === null
@@ -144,8 +178,8 @@ export function ChartPlayer({
       <button
         type="button"
         onClick={() => {
-          if (playing) stop();
-          else void start();
+          if (playing) stopPlayback();
+          else void startPlayback();
         }}
         className="rounded-full bg-brass px-5 py-2 text-sm font-medium text-ink transition hover:bg-brass-hot"
       >
@@ -154,10 +188,7 @@ export function ChartPlayer({
 
       <button
         type="button"
-        onClick={() => {
-          stop();
-          onPlayheadChange(null);
-        }}
+        onClick={() => stopPlayback()}
         className="rounded-full border border-white/20 px-4 py-2 text-sm text-ivory transition hover:border-brass/50 hover:text-brass-hot"
       >
         重設
@@ -197,6 +228,12 @@ export function ChartPlayer({
       <p className="w-full text-xs text-muted sm:w-auto sm:flex-1 sm:text-right">
         只播這段鼓譜的鼓聲，游標會跟著走，方便對譜練習。
       </p>
+
+      {error ? (
+        <p className="w-full text-xs text-red-300" role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
