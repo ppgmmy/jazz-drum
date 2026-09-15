@@ -101,7 +101,8 @@ export default async function ChartPage({ params }: PageProps) {
               分段鼓譜
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted print:hidden">
-              播放上面歌曲，對到該段再打。每段可分開下載或列印。
+              播放上面歌曲，對到該段再打。譜面多數為 4 小節、十六分細分（含
+              ghost／fill）；每段可分開下載或列印。手機請橫向捲動查看完整格子。
             </p>
 
             <div className="mt-8 space-y-12">

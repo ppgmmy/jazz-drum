@@ -40,7 +40,8 @@ export default function ResourcesPage() {
             資源庫：歌曲鼓譜
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-            每首歌都有完整影片＋分段鼓譜。先聽成首，再對主歌／副歌練習。
+            每首歌都有完整影片＋細分鼓譜（多為 4 小節、十六分格，含 ghost 與
+            fill）。先聽成首，再對主歌／副歌／轉折練習。
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3 print:hidden">

@@ -24,6 +24,25 @@ function cellGlyph(cell: Cell) {
   }
 }
 
+function subdivisionLabel(perBeat: 2 | 3 | 4, slotInBeat: number): string {
+  if (slotInBeat === 0) return "";
+  switch (perBeat) {
+    case 2:
+      return "&";
+    case 3:
+      return slotInBeat === 1 ? "trip" : "let";
+    case 4: {
+      if (slotInBeat === 1) return "e";
+      if (slotInBeat === 2) return "&";
+      return "a";
+    }
+    default: {
+      const _exhaustive: never = perBeat;
+      return _exhaustive;
+    }
+  }
+}
+
 type DrumChartViewProps = {
   id?: string;
   title: string;
@@ -46,35 +65,36 @@ export function DrumChartView({
   const cellsPerBar = pattern.beatsPerBar * pattern.perBeat;
   const totalCells = pattern.bars * cellsPerBar;
   const labelWidth = 92;
-  const cellWidth = 28;
-  const rowHeight = 36;
-  const topPad = sectionLabel ? 72 : 56;
-  const bottomPad = 36;
+  const cellWidth = totalCells >= 48 ? 18 : totalCells >= 32 ? 22 : 28;
+  const rowHeight = totalCells >= 48 ? 32 : 36;
+  const topPad = sectionLabel ? 78 : 62;
+  const bottomPad = pattern.perBeat >= 3 ? 48 : 36;
   const width = labelWidth + totalCells * cellWidth + 24;
   const height = topPad + VOICES.length * rowHeight + bottomPad;
   const heading = sectionLabel ? `${title} · ${sectionLabel}` : title;
+  const gridMeta = `${pattern.bars} 小節 · 每拍 ${pattern.perBeat} 格`;
 
   return (
     <svg
       id={id}
       viewBox={`0 0 ${width} ${height}`}
-      className="h-auto w-full"
+      className="h-auto w-full min-w-[640px]"
       role="img"
       aria-label={`${heading} 鼓譜`}
     >
       <rect width={width} height={height} fill="#f7f1e6" rx="12" />
       <text
         x={16}
-        y={28}
+        y={26}
         fill="#101820"
         fontFamily="var(--font-display), Georgia, serif"
-        fontSize="18"
+        fontSize="17"
       >
         {heading}
       </text>
       <text
         x={width - 16}
-        y={28}
+        y={26}
         textAnchor="end"
         fill="#8a6a3a"
         fontFamily="var(--font-mono), monospace"
@@ -82,17 +102,33 @@ export function DrumChartView({
       >
         {meter} · {tempo}
       </text>
-      {sectionLabel ? (
-        <text
-          x={16}
-          y={50}
-          fill="#8a6a3a"
-          fontFamily="var(--font-body), sans-serif"
-          fontSize="12"
-        >
-          對片練習段落
-        </text>
-      ) : null}
+      <text
+        x={16}
+        y={46}
+        fill="#8a6a3a"
+        fontFamily="var(--font-body), sans-serif"
+        fontSize="11"
+      >
+        {sectionLabel ? `對片練習 · ${gridMeta}` : gridMeta}
+      </text>
+
+      {Array.from({ length: pattern.bars }, (_, bar) => {
+        const x =
+          labelWidth + bar * cellsPerBar * cellWidth + (cellsPerBar * cellWidth) / 2;
+        return (
+          <text
+            key={`bar-num-${bar}`}
+            x={x}
+            y={topPad - 8}
+            textAnchor="middle"
+            fill="#8a6a3a"
+            fontFamily="var(--font-mono), monospace"
+            fontSize="10"
+          >
+            小節 {bar + 1}
+          </text>
+        );
+      })}
 
       {VOICES.map((voice, row) => {
         const y = topPad + row * rowHeight;
@@ -123,6 +159,9 @@ export function DrumChartView({
               const glyph = cellGlyph(cell);
               const cx = x + cellWidth / 2;
               const cy = y + rowHeight / 2;
+              const accentR = cellWidth < 22 ? 5.5 : 7;
+              const hitR = cellWidth < 22 ? 4.2 : 5.5;
+              const ghostR = cellWidth < 22 ? 3.2 : 4;
 
               return (
                 <g key={`${voice}-${index}`}>
@@ -144,15 +183,24 @@ export function DrumChartView({
                       stroke="#cbb89a"
                       strokeWidth="1"
                     />
-                  ) : null}
+                  ) : (
+                    <line
+                      x1={x}
+                      x2={x}
+                      y1={y + 12}
+                      y2={y + rowHeight - 6}
+                      stroke="#e8dcc8"
+                      strokeWidth="1"
+                    />
+                  )}
                   {glyph.kind === "accent" ? (
-                    <circle cx={cx} cy={cy} r="7" fill="#101820" />
+                    <circle cx={cx} cy={cy} r={accentR} fill="#101820" />
                   ) : null}
                   {glyph.kind === "hit" ? (
                     <circle
                       cx={cx}
                       cy={cy}
-                      r="5.5"
+                      r={hitR}
                       fill="none"
                       stroke="#101820"
                       strokeWidth="1.6"
@@ -162,7 +210,7 @@ export function DrumChartView({
                     <circle
                       cx={cx}
                       cy={cy}
-                      r="4"
+                      r={ghostR}
                       fill="none"
                       stroke="#8a6a3a"
                       strokeWidth="1.2"
@@ -176,28 +224,49 @@ export function DrumChartView({
         );
       })}
 
-      {Array.from({ length: pattern.bars * pattern.beatsPerBar }, (_, beat) => {
-        const index = beat * pattern.perBeat;
+      {Array.from({ length: totalCells }, (_, index) => {
         const x = labelWidth + index * cellWidth + cellWidth / 2;
-        const beatInBar = (beat % pattern.beatsPerBar) + 1;
-        return (
-          <text
-            key={`beat-${beat}`}
-            x={x}
-            y={height - 12}
-            textAnchor="middle"
-            fill="#8a6a3a"
-            fontFamily="var(--font-mono), monospace"
-            fontSize="10"
-          >
-            {beatInBar}
-          </text>
-        );
+        const slotInBeat = index % pattern.perBeat;
+        const beat =
+          (Math.floor(index / pattern.perBeat) % pattern.beatsPerBar) + 1;
+        const sub = subdivisionLabel(pattern.perBeat, slotInBeat);
+        const y = height - (pattern.perBeat >= 3 ? 28 : 12);
+        if (slotInBeat === 0) {
+          return (
+            <text
+              key={`beat-${index}`}
+              x={x}
+              y={y}
+              textAnchor="middle"
+              fill="#8a6a3a"
+              fontFamily="var(--font-mono), monospace"
+              fontSize="10"
+            >
+              {beat}
+            </text>
+          );
+        }
+        if (pattern.perBeat >= 3 && cellWidth >= 18) {
+          return (
+            <text
+              key={`sub-${index}`}
+              x={x}
+              y={y + 12}
+              textAnchor="middle"
+              fill="#b09a78"
+              fontFamily="var(--font-mono), monospace"
+              fontSize="8"
+            >
+              {sub}
+            </text>
+          );
+        }
+        return null;
       })}
 
       <text
         x={16}
-        y={height - 12}
+        y={height - 10}
         fill="#8a6a3a"
         fontFamily="var(--font-body), sans-serif"
         fontSize="10"

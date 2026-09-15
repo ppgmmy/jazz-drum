@@ -25,6 +25,8 @@ export function getSongChart(slug: string): SongChart | undefined {
 
   return {
     ...chart,
+    /** 主譜與第一段對齊，方便列表／預覽也看到細譜 */
+    pattern: sections[0]?.pattern ?? chart.pattern,
     youtubeId: media?.youtubeId ?? "",
     form: media?.form ?? ["全曲"],
     sections,
