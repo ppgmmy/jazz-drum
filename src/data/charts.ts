@@ -21,6 +21,8 @@ export type ChartSection = {
   label: string;
   description?: string;
   pattern: ChartPattern;
+  /** 影片入面呢段大概開始秒數（跟歌練習用） */
+  startSec?: number;
 };
 
 export type DrumChart = {

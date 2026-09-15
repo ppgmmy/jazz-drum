@@ -16,6 +16,8 @@ import {
 export type SongMedia = {
   youtubeId: string;
   form: string[];
+  /** 影片開頭到第一段鼓譜對應位置的秒數（預留前奏） */
+  introSec?: number;
   sections?: ChartSection[];
 };
 
@@ -23,8 +25,9 @@ function section(
   label: string,
   description: string,
   pattern: ReturnType<typeof groove>,
+  startSec?: number,
 ): ChartSection {
-  return { label, description, pattern };
+  return { label, description, pattern, ...(startSec !== undefined ? { startSec } : {}) };
 }
 
 function ghostsEveryBar(bars: number, offsets: number[]): Array<[number, Cell]> {
@@ -39,6 +42,7 @@ function ghostsEveryBar(bars: number, offsets: number[]): Array<[number, Cell]> 
 export const SONG_MEDIA: Record<string, SongMedia> = {
   "so-what": {
     youtubeId: "zqNTltOGh5c",
+    introSec: 8,
     form: ["頭奏", "主題", "Solo 輪流", "主題再現", "尾聲"],
     sections: [
       section(
@@ -132,6 +136,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "take-five": {
     youtubeId: "tT9Eh8wNMkw",
+    introSec: 6,
     form: ["Sax 主題", "鋼琴 Solo", "主題再現", "尾奏"],
     sections: [
       section(
@@ -199,6 +204,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "blue-train": {
     youtubeId: "YjRbmtrDJI4",
+    introSec: 0,
     form: ["頭奏", "主題", "Solo", "主題再現"],
     sections: [
       section(
@@ -631,6 +637,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "billie-jean": {
     youtubeId: "Zi_XLOBDo_Y",
+    introSec: 0,
     form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "間奏", "副歌結束"],
     sections: [
       section(
@@ -755,6 +762,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "seven-nation-army": {
     youtubeId: "0J2QdDbelmY",
+    introSec: 7,
     form: ["Intro riff", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "riff 再現"],
     sections: [
       section(
@@ -852,6 +860,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "smells-like-teen-spirit": {
     youtubeId: "hTWKbfoikeg",
+    introSec: 5,
     form: ["主歌 1", "副歌 1", "主歌 2", "副歌 2", "Solo／尾"],
     sections: [
       section(
@@ -943,6 +952,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "another-one-bites-the-dust": {
     youtubeId: "rY0WxgSXdEE",
+    introSec: 0,
     form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "間奏", "副歌結束"],
     sections: [
       section(
@@ -1033,6 +1043,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "uptown-funk": {
     youtubeId: "OPf0YbXqDm0",
+    introSec: 8,
     form: ["Intro hits", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Bridge", "副歌結束"],
     sections: [
       section(
@@ -1144,6 +1155,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "we-will-rock-you": {
     youtubeId: "-tJYN-eG1zk",
+    introSec: 0,
     form: ["Stomp 開場", "人聲段", "結他段", "Stomp 再現", "結尾"],
     sections: [
       section(
@@ -1213,6 +1225,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "beat-it": {
     youtubeId: "oRdxUFDoQe0",
+    introSec: 10,
     form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Solo", "副歌尾"],
     sections: [
       section(
@@ -1322,6 +1335,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "qing-tian": {
     youtubeId: "DYptgVvkVLQ",
+    introSec: 12,
     form: ["前奏", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "間奏", "副歌／尾奏"],
     sections: [
       section(
@@ -1479,6 +1493,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   "hai-kuo-tian-kong": {
     youtubeId: "V4GUy2EHMMs",
+    introSec: 18,
     form: ["前奏", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "大尾"],
     sections: [
       section(
