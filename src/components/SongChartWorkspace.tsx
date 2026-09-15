@@ -12,7 +12,6 @@ type SongChartWorkspaceProps = {
   title: string;
   meter: string;
   tempo: string;
-  youtubeId?: string;
   voiceLabels?: Partial<Record<DrumVoice, string>>;
   sections: ChartSection[];
 };
@@ -22,7 +21,6 @@ export function SongChartWorkspace({
   title,
   meter,
   tempo,
-  youtubeId,
   voiceLabels,
   sections,
 }: SongChartWorkspaceProps) {
@@ -76,8 +74,8 @@ export function SongChartWorkspace({
         </div>
         <p className="mt-3 max-w-2xl text-sm text-muted">
           {mode === "full"
-            ? "成首歌由頭打到尾：一個控制器帶住下面完整鼓譜跟住走，而家打到邊段會自動跳過去。"
-            : "分段顯示：撳邊段就練邊段；跟歌聲時播到段尾即停，唔會過龍。"}
+            ? "成首歌由頭打到尾：一個控制器帶住下面完整鼓譜跟住走，鼓＋鋼琴引導旋律，而家打到邊段會自動跳過去。"
+            : "分段顯示：撳邊段就練邊段；鼓＋鋼琴到段尾即停，唔會過龍。"}
         </p>
       </div>
 
@@ -86,6 +84,7 @@ export function SongChartWorkspace({
           sections={sections}
           tempo={tempo}
           voiceLabels={voiceLabels}
+          melodyId={slug}
           activeSectionIndex={activeSectionIndex}
           onActiveSectionChange={setActiveSectionIndex}
           sectionPlayhead={sectionPlayhead}
@@ -114,7 +113,7 @@ export function SongChartWorkspace({
                   {String(sections.length).padStart(2, "0")} ·{" "}
                   {section.pattern.bars} 小節
                   {section.startSec !== undefined
-                    ? ` · 影片 ${Math.floor(section.startSec / 60)}:${String(
+                    ? ` · ${Math.floor(section.startSec / 60)}:${String(
                         Math.floor(section.startSec % 60),
                       ).padStart(2, "0")}`
                     : ""}
@@ -139,9 +138,10 @@ export function SongChartWorkspace({
                 tempo={tempo}
                 pattern={section.pattern}
                 voiceLabels={voiceLabels}
-                songStartSec={youtubeId ? section.startSec : undefined}
-                songEndSec={youtubeId ? section.endSec : undefined}
+                songStartSec={section.startSec}
+                songEndSec={section.endSec}
                 sectionId={`${slug}-${index}`}
+                melodyId={slug}
                 hidePlayer={mode === "full"}
                 externalPlayhead={
                   mode === "full" && isActive ? sectionPlayhead : null

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
   return {
     title: `${chart.title} 鼓譜｜Soft Ride`,
-    description: `${chart.artist} — ${chart.title}：全曲結構鼓譜，按段落順序跟歌打完整首。`,
+    description: `${chart.artist} — ${chart.title}：全曲結構鼓譜，鼓聲配鋼琴引導旋律練習。`,
   };
 }
 
@@ -80,7 +80,7 @@ export default async function ChartPage({ params }: PageProps) {
               </p>
               <h2 className="mt-2 font-display text-2xl text-ivory">全曲結構</h2>
               <p className="mt-3 max-w-2xl text-sm text-muted">
-                由上到下＝整首歌打法。點段落可跳到對應鼓譜。播鼓時勾「跟歌聲」，影片會跳去該段，方便對住歌邊度。
+                由上到下＝整首歌打法。點段落可跳到對應鼓譜。播鼓時可勾「鋼琴旋律」，用琴聲模擬 tonal outline，唔會硬夾 YouTube 原曲。
               </p>
               <ol className="mt-5 flex flex-wrap gap-2">
                 {chart.form.map((part, index) => (
@@ -108,7 +108,7 @@ export default async function ChartPage({ params }: PageProps) {
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted print:hidden">
                 共 {chart.sections.length}{" "}
-                段。可揀「全曲直落」由頭打到尾，或者「分段練習」逐段跟歌（到段尾即停）。
+                段。可揀「全曲直落」由頭打到尾，或者「分段練習」逐段練（到段尾即停）。
               </p>
 
               <div className="mt-8">
@@ -117,7 +117,6 @@ export default async function ChartPage({ params }: PageProps) {
                   title={chart.title}
                   meter={chart.meter}
                   tempo={chart.tempo}
-                  youtubeId={chart.youtubeId || undefined}
                   voiceLabels={chart.voiceLabels}
                   sections={chart.sections}
                 />
@@ -127,8 +126,8 @@ export default async function ChartPage({ params }: PageProps) {
             <section className="mt-12 border-t border-white/10 pt-8 print:hidden">
               <h2 className="font-display text-2xl text-ivory">怎麼打完整首</h2>
               <ol className="mt-5 space-y-4 text-sm leading-relaxed text-muted">
-                <li>1. 先聽完整首歌，對照上方「全曲結構」記住進出位置。</li>
-                <li>2. 「分段練習」：跟歌聲播到段尾即停，唔會過龍。想一次聽晒就用「全曲直落」。</li>
+                <li>1. 可先聽上方參考影片，對照「全曲結構」記住進出位置。</li>
+                <li>2. 「分段練習」：鼓＋鋼琴引導旋律播到段尾即停，唔會過龍。想一次聽晒就用「全曲直落」。</li>
                 <li>3. 「全曲直落」：一個掣由頭打到尾，譜會跟住跳去而家嗰段。</li>
                 <li>4. 整首串連：寧可少花，也要穩在 pocket。</li>
               </ol>

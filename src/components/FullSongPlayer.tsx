@@ -17,24 +17,28 @@ import {
   findSectionBySongTime,
   type SectionMarker,
 } from "@/lib/fullSongChart";
+import {
+  getMelodyProfile,
+  scheduleMelodyForCell,
+} from "@/lib/pianoMelody";
 import { formatClock } from "@/lib/youtube";
 
 type FullSongPlayerProps = {
   sections: ChartSection[];
   tempo: string;
   voiceLabels?: Partial<Record<DrumVoice, string>>;
+  melodyId?: string;
   activeSectionIndex: number;
   onActiveSectionChange: (index: number) => void;
   sectionPlayhead: number | null;
   onSectionPlayheadChange: (index: number | null) => void;
 };
 
-const SONG_LATENCY_SEC = 0.08;
-
 export function FullSongPlayer({
   sections,
   tempo,
   voiceLabels,
+  melodyId,
   activeSectionIndex,
   onActiveSectionChange,
   sectionPlayhead,
@@ -45,13 +49,13 @@ export function FullSongPlayer({
   const noiseRef = useRef<AudioBuffer | null>(null);
   const timerRef = useRef<number | null>(null);
   const playingRef = useRef(false);
-  const withSongRef = useRef(true);
+  const withMelodyRef = useRef(true);
   const bpmRef = useRef(parseTempoBpm(tempo));
   const markersRef = useRef<SectionMarker[]>([]);
   const rideIsHatRef = useRef(false);
   const scheduledKeysRef = useRef(new Set<string>());
-  const freeSongTimeRef = useRef(0);
-  const freeLastCtxTimeRef = useRef(0);
+  const songTimeRef = useRef(0);
+  const lastCtxTimeRef = useRef(0);
   const onActiveRef = useRef(onActiveSectionChange);
   const onPlayheadRef = useRef(onSectionPlayheadChange);
   const activeIndexRef = useRef(activeSectionIndex);
@@ -66,16 +70,16 @@ export function FullSongPlayer({
 
   const [bpm, setBpm] = useState(() => parseTempoBpm(tempo));
   const [playing, setPlaying] = useState(false);
-  const [withSong, setWithSong] = useState(Boolean(songSync));
+  const [withMelody, setWithMelody] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [syncLabel, setSyncLabel] = useState<string | null>(null);
 
   const songStartSec = markers[0]?.startSec ?? 0;
   const songEndSec = markers[markers.length - 1]?.endSec ?? songStartSec;
-  const canFollowSong = Boolean(songSync);
   const activeLabel = markers[activeSectionIndex]?.label ?? "—";
+  const melodyProfile = getMelodyProfile(melodyId);
 
-  withSongRef.current = withSong;
+  withMelodyRef.current = withMelody;
 
   const clearTimer = () => {
     if (timerRef.current !== null) {
@@ -84,16 +88,13 @@ export function FullSongPlayer({
     }
   };
 
-  const stopPlayback = (opts?: { pauseSong?: boolean }) => {
+  const stopPlayback = () => {
     clearTimer();
     playingRef.current = false;
     setPlaying(false);
     scheduledKeysRef.current.clear();
     onPlayheadRef.current(null);
     setSyncLabel(null);
-    if (opts?.pauseSong !== false && withSongRef.current) {
-      songSync?.pauseSong();
-    }
   };
 
   const stopPlaybackRef = useRef(stopPlayback);
@@ -102,7 +103,7 @@ export function FullSongPlayer({
   useEffect(() => {
     if (!songSync) return;
     return songSync.registerStopper(ownerId, () => {
-      stopPlaybackRef.current({ pauseSong: false });
+      stopPlaybackRef.current();
     });
   }, [songSync, ownerId]);
 
@@ -125,15 +126,12 @@ export function FullSongPlayer({
     return audioRef.current;
   };
 
-  const readSongTime = (ctx: AudioContext): number | null => {
-    if (withSongRef.current) {
-      return songSync?.getSongTime() ?? null;
-    }
+  const readSongTime = (ctx: AudioContext): number => {
     const now = ctx.currentTime;
-    const dt = Math.max(0, now - freeLastCtxTimeRef.current);
-    freeLastCtxTimeRef.current = now;
-    freeSongTimeRef.current += dt;
-    return freeSongTimeRef.current;
+    const dt = Math.max(0, now - lastCtxTimeRef.current);
+    lastCtxTimeRef.current = now;
+    songTimeRef.current += dt;
+    return songTimeRef.current;
   };
 
   const scheduleAhead = () => {
@@ -141,18 +139,10 @@ export function FullSongPlayer({
     const noise = noiseRef.current;
     if (!ctx || !noise || !playingRef.current) return;
 
-    const songNowRaw = readSongTime(ctx);
-    if (songNowRaw === null) {
-      setSyncLabel("對齊影片中…");
-      return;
-    }
+    const songNow = readSongTime(ctx);
 
-    const songNow = withSongRef.current
-      ? songNowRaw + SONG_LATENCY_SEC
-      : songNowRaw;
-
-    if (songNowRaw >= songEndSec - 0.03) {
-      stopPlayback({ pauseSong: true });
+    if (songNow >= songEndSec - 0.03) {
+      stopPlayback();
       return;
     }
 
@@ -182,6 +172,8 @@ export function FullSongPlayer({
 
     if (scheduledKeysRef.current.size > 300) scheduledKeysRef.current.clear();
 
+    const secondsPerBeat = 60 / bpmRef.current;
+
     for (let guard = 0; guard < marker.cellCount * 3; guard += 1) {
       if (cell >= marker.cellCount) {
         cell = 0;
@@ -197,10 +189,20 @@ export function FullSongPlayer({
         scheduledKeysRef.current.add(key);
         const when = ctx.currentTime + (cellSongTime - songNow);
         if (when >= ctx.currentTime - 0.045) {
-          const hits = hitsAtCell(marker.pattern, cell, rideIsHatRef.current);
           const playAt = Math.max(when, ctx.currentTime);
+          const hits = hitsAtCell(marker.pattern, cell, rideIsHatRef.current);
           for (const hit of hits) {
             playPad(ctx, getPad(hit.padId), noise, playAt, hit.velocity);
+          }
+          if (withMelodyRef.current) {
+            scheduleMelodyForCell(
+              ctx,
+              melodyProfile,
+              marker.pattern,
+              cell,
+              playAt,
+              secondsPerBeat,
+            );
           }
         }
       }
@@ -208,9 +210,9 @@ export function FullSongPlayer({
     }
 
     setSyncLabel(
-      withSongRef.current
-        ? `全曲 · ${formatClock(songNowRaw)}`
-        : "全曲（只鼓）",
+      withMelodyRef.current
+        ? `全曲 · 鼓＋琴 ${formatClock(songNow)}`
+        : `全曲 · 只鼓 ${formatClock(songNow)}`,
     );
   };
 
@@ -221,20 +223,14 @@ export function FullSongPlayer({
       const ctx = await ensureAudio();
       clearTimer();
       scheduledKeysRef.current.clear();
-      freeSongTimeRef.current = songStartSec;
-      freeLastCtxTimeRef.current = ctx.currentTime;
+      songTimeRef.current = songStartSec;
+      lastCtxTimeRef.current = ctx.currentTime;
       playingRef.current = true;
       setPlaying(true);
       activeIndexRef.current = 0;
       onActiveRef.current(0);
       onPlayheadRef.current(0);
-
-      if (withSongRef.current && songSync) {
-        songSync.playSongFrom(songStartSec);
-        setSyncLabel("對齊影片中…");
-      } else {
-        setSyncLabel("全曲（只鼓）");
-      }
+      setSyncLabel(withMelodyRef.current ? "全曲 · 鼓＋琴" : "全曲 · 只鼓");
 
       scheduleAhead();
       timerRef.current = window.setInterval(scheduleAhead, 25);
@@ -280,11 +276,7 @@ export function FullSongPlayer({
           }}
           className="rounded-full bg-brass px-5 py-2 text-sm font-medium text-ink transition hover:bg-brass-hot"
         >
-          {playing
-            ? "停止"
-            : canFollowSong && withSong
-              ? "全曲鼓＋歌"
-              : "全曲播鼓"}
+          {playing ? "停止" : withMelody ? "全曲鼓＋琴" : "全曲播鼓"}
         </button>
 
         <button
@@ -311,21 +303,19 @@ export function FullSongPlayer({
           <span className="w-10 font-mono text-ivory">{bpm}</span>
         </label>
 
-        {canFollowSong ? (
-          <label className="flex items-center gap-2 text-sm text-muted">
-            <input
-              type="checkbox"
-              checked={withSong}
-              disabled={playing}
-              onChange={(event) => setWithSong(event.target.checked)}
-              className="accent-[var(--brass)]"
-            />
-            跟歌聲
-            <span className="font-mono text-xs text-brass">
-              {formatClock(songStartSec)}–{formatClock(songEndSec)}
-            </span>
-          </label>
-        ) : null}
+        <label className="flex items-center gap-2 text-sm text-muted">
+          <input
+            type="checkbox"
+            checked={withMelody}
+            disabled={playing}
+            onChange={(event) => setWithMelody(event.target.checked)}
+            className="accent-[var(--brass)]"
+          />
+          鋼琴旋律
+          <span className="font-mono text-xs text-brass">
+            {formatClock(songStartSec)}–{formatClock(songEndSec)}
+          </span>
+        </label>
 
         {syncLabel ? (
           <span className="rounded-full border border-brass/30 bg-brass/10 px-2.5 py-1 font-mono text-[11px] text-brass">
@@ -335,7 +325,8 @@ export function FullSongPlayer({
       </div>
 
       <p className="mt-2 text-xs text-muted">
-        由頭一路打到尾：影片同鼓一齊走，下面譜會跟住跳去而家嗰段，游標顯示打到邊格。
+        由頭一路打到尾：鼓聲配鋼琴引導旋律（唔會硬夾 YouTube
+        原曲），下面譜會跟住跳去而家嗰段。
       </p>
 
       {error ? (

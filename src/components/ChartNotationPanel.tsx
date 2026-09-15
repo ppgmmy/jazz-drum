@@ -21,11 +21,13 @@ type ChartNotationPanelProps = {
   songStartSec?: number;
   songEndSec?: number;
   sectionId?: string;
+  /** 歌曲 slug，揀鋼琴引導旋律 */
+  melodyId?: string;
   /** 全曲模式：隱藏每段自己嘅播放器 */
   hidePlayer?: boolean;
   /** 由外層（全曲播放）注入游標 */
   externalPlayhead?: number | null;
-  /** 分段練習：跟歌到段尾必停 */
+  /** 分段練習：到段尾必停 */
   strictSection?: boolean;
 };
 
@@ -41,6 +43,7 @@ export function ChartNotationPanel({
   songStartSec,
   songEndSec,
   sectionId,
+  melodyId,
   hidePlayer = false,
   externalPlayhead = null,
   strictSection = true,
@@ -100,6 +103,7 @@ export function ChartNotationPanel({
           songStartSec={songStartSec}
           songEndSec={songEndSec}
           sectionId={sectionId}
+          melodyId={melodyId}
           strictSection={strictSection}
         />
       ) : null}

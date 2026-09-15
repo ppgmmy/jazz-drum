@@ -21,9 +21,9 @@ export type ChartSection = {
   label: string;
   description?: string;
   pattern: ChartPattern;
-  /** 影片入面呢段大概開始秒數（跟歌練習用） */
+  /** 段落時間窗開始（練習時長用，唔再硬夾 YouTube） */
   startSec?: number;
-  /** 呢段喺影片大概結束秒數（跟歌時鼓聲對齊到呢度就停／切下一段） */
+  /** 段落時間窗結束 */
   endSec?: number;
 };
 
