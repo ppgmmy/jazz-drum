@@ -1556,9 +1556,9 @@ export const DRUM_CHARTS: DrumChart[] = [
     meter: "4/4",
     tempo: "♩ = 86",
     summary:
-      "粵語搖滾經典：主歌克制、副歌打開。Crash 進副歌時不要搶過吉他。",
-    focus: ["主歌副歌動態", "Rock 厚度", "大結尾控制"],
-    voiceLabels: { ride: "Hi-Hat / Ride" },
+      "粵語搖滾經典：全曲 Hi-Hat 以八分為主（唔係十六分密打）。主歌克制、副歌 Crash 打開，但 HH 仍然係八分。",
+    focus: ["八分 Hi-Hat", "主歌副歌動態", "大結尾控制"],
+    voiceLabels: { ride: "Hi-Hat / Crash" },
     pattern: {
       bars: 2,
       perBeat: 2,
@@ -1629,8 +1629,8 @@ export const DRUM_CHARTS: DrumChart[] = [
           "",
           "x",
           "",
-          "",
           "x",
+          "",
           "x",
           "",
           "",

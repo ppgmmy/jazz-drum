@@ -1627,7 +1627,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
     sections: [
       section(
         "1. 前奏（8 小節）",
-        "克制 rock 進場；kick 只點 1＋3。",
+        "原曲係經典粵語 rock：Hi-Hat 淨係八分，唔係十六分。Kick 1／3、Snare 2／4。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1639,7 +1639,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "主歌克制；kick 不過密。",
+        "主歌保持八分閉合 HH；kick 偶數小節可加 &（第 3 拍後一格），仍然唔打十六分 HH。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1658,19 +1658,19 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
       ),
       section(
         "3. 副歌 1（8 小節）",
-        "Crash／Ride 打開；kick 加厚。",
+        "副歌打開：每小節頭 Crash（X），其餘仍係八分 HH——原曲副歌都唔係十六分密打。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, [0, 16, 32, 48, 64, 80, 96, 112]),
-          kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 8),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          ride: hats8(8, 16),
+          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"]]), 8),
+          snare: backbeat16(8),
         }),
         88,
       ),
       section(
         "4. 主歌 2（8 小節）",
-        "收回主歌。",
+        "收回主歌：八分 HH、backbeat。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1689,26 +1689,26 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
       ),
       section(
         "5. 副歌 2（8 小節）",
-        "副歌再打開。",
+        "副歌再打開：Crash＋八分 HH；kick 稍厚，仍然無十六分 HH。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, [0, 16, 32, 48, 64, 80, 96, 112]),
-          kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          ride: hats8(8, 16),
+          kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 8),
+          snare: backbeat16(8),
         }),
         160,
       ),
       section(
         "6. 大尾（8 小節）",
-        "前 6 小節副歌厚度；後 2 小節 fill 撞 Crash 收。",
+        "前 6 小節維持副歌八分 HH；後 2 小節 fill 收，唔轉十六分密 HH。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: concat(
-            hats16(6, [0, 16, 32, 48, 64, 80]),
-            place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]),
-            place(16, [[0, "X"], [8, "X"]]),
+            hats8(6, 16),
+            place(16, [[0, "X"], [4, "x"], [8, "x"], [12, "x"]]),
+            place(16, [[0, "X"], [8, "x"]]),
           ),
           kick: concat(
             repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 6),
@@ -1717,12 +1717,13 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(
             backbeat16(6),
-            place(16, [[4, "X"], [6, "X"], [7, "g"], [8, "X"], [9, "g"], [10, "X"], [11, "X"], [12, "X"], [13, "X"], [14, "X"], [15, "X"]]),
-            place(16, [[4, "X"], [12, "X"], [15, "X"]]),
+            place(16, [[4, "X"], [6, "X"], [8, "X"], [10, "X"], [12, "X"], [14, "X"]]),
+            place(16, [[4, "X"], [12, "X"]]),
           ),
         }),
         196,
       ),
     ],
   },
+
 };
