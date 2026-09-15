@@ -2,55 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { DRUM_PADS, type DrumPad, type DrumPadId } from "@/data/kit";
-
-function createNoiseBuffer(ctx: AudioContext) {
-  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i += 1) {
-    data[i] = Math.random() * 2 - 1;
-  }
-  return buffer;
-}
-
-function playPad(ctx: AudioContext, pad: DrumPad, noiseBuffer: AudioBuffer) {
-  const now = ctx.currentTime;
-  const master = ctx.createGain();
-  master.gain.value = pad.gain;
-  master.connect(ctx.destination);
-
-  const osc = ctx.createOscillator();
-  const oscGain = ctx.createGain();
-  osc.type = pad.type;
-  osc.frequency.setValueAtTime(pad.frequency, now);
-  if (pad.id === "kick" || pad.id === "tom") {
-    osc.frequency.exponentialRampToValueAtTime(
-      Math.max(35, pad.frequency * 0.35),
-      now + pad.duration * 0.55,
-    );
-  }
-  oscGain.gain.setValueAtTime(1, now);
-  oscGain.gain.exponentialRampToValueAtTime(0.001, now + pad.duration);
-  osc.connect(oscGain);
-  oscGain.connect(master);
-  osc.start(now);
-  osc.stop(now + pad.duration + 0.02);
-
-  if (pad.noise) {
-    const noise = ctx.createBufferSource();
-    const noiseGain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-    noise.buffer = noiseBuffer;
-    filter.type = pad.id === "hihat" ? "highpass" : "bandpass";
-    filter.frequency.value = pad.id === "hihat" ? 6000 : 1800;
-    noiseGain.gain.setValueAtTime(pad.id === "snare" ? 0.7 : 0.35, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + pad.duration * 0.8);
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(master);
-    noise.start(now);
-    noise.stop(now + pad.duration);
-  }
-}
+import { createNoiseBuffer, playPad } from "@/lib/drumAudio";
 
 export function JazzKit() {
   const audioRef = useRef<AudioContext | null>(null);

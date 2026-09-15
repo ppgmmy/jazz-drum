@@ -9,6 +9,8 @@ type StaffDrumChartViewProps = {
   tempo: string;
   pattern: ChartPattern;
   voiceLabels?: Partial<Record<DrumVoice, string>>;
+  /** 播放游標：全曲格索引，null 表示未播放 */
+  playheadIndex?: number | null;
 };
 
 const LINE_GAP = 12;
@@ -102,6 +104,7 @@ export function StaffDrumChartView({
   tempo,
   pattern,
   voiceLabels,
+  playheadIndex = null,
 }: StaffDrumChartViewProps) {
   const cellsPerBar = pattern.beatsPerBar * pattern.perBeat;
   const systems = systemRanges(pattern);
@@ -171,6 +174,19 @@ export function StaffDrumChartView({
                 />
               );
             })}
+
+            {playheadIndex !== null &&
+            playheadIndex >= startCell &&
+            playheadIndex < startCell + lineCells ? (
+              <rect
+                x={leftPad + (playheadIndex - startCell) * slotWidth}
+                y={staffTop - LINE_GAP * 1.2}
+                width={slotWidth}
+                height={STAFF_HEIGHT + LINE_GAP * 2.4}
+                fill="#c4a35a"
+                opacity="0.28"
+              />
+            ) : null}
 
             {Array.from({ length: system.barCount + 1 }, (_, bar) => {
               const x = leftPad + bar * cellsPerBar * slotWidth;

@@ -52,6 +52,7 @@ type DrumChartViewProps = {
   tempo: string;
   pattern: ChartPattern;
   voiceLabels?: Partial<Record<DrumVoice, string>>;
+  playheadIndex?: number | null;
 };
 
 export function DrumChartView({
@@ -62,6 +63,7 @@ export function DrumChartView({
   tempo,
   pattern,
   voiceLabels,
+  playheadIndex = null,
 }: DrumChartViewProps) {
   const cellsPerBar = pattern.beatsPerBar * pattern.perBeat;
   const systems = systemRanges(pattern);
@@ -124,6 +126,19 @@ export function DrumChartView({
                 </text>
               );
             })}
+
+            {playheadIndex !== null &&
+            playheadIndex >= startCell &&
+            playheadIndex < startCell + lineCells ? (
+              <rect
+                x={labelWidth + (playheadIndex - startCell) * cellWidth}
+                y={topPad + 22}
+                width={cellWidth}
+                height={VOICES.length * rowHeight}
+                fill="#c4a35a"
+                opacity="0.3"
+              />
+            ) : null}
 
             {VOICES.map((voice, row) => {
               const y = topPad + 22 + row * rowHeight;

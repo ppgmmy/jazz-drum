@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChartActions } from "@/components/ChartActions";
+import { ChartPlayer } from "@/components/ChartPlayer";
 import { DrumChartView } from "@/components/DrumChartView";
 import { StaffDrumChartView } from "@/components/StaffDrumChartView";
 import type { ChartPattern, DrumVoice } from "@/data/charts";
@@ -30,6 +31,7 @@ export function ChartNotationPanel({
   voiceLabels,
 }: ChartNotationPanelProps) {
   const [mode, setMode] = useState<NotationMode>("staff");
+  const [playheadIndex, setPlayheadIndex] = useState<number | null>(null);
   const staffId = `${svgIdBase}-staff`;
   const gridId = `${svgIdBase}-grid`;
   const activeId = mode === "staff" ? staffId : gridId;
@@ -72,6 +74,14 @@ export function ChartNotationPanel({
         <ChartActions title={downloadTitle} chartSvgId={activeId} />
       </div>
 
+      <ChartPlayer
+        pattern={pattern}
+        tempo={tempo}
+        voiceLabels={voiceLabels}
+        playheadIndex={playheadIndex}
+        onPlayheadChange={setPlayheadIndex}
+      />
+
       <div className="rounded-[1.5rem] border border-white/10 bg-ivory/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5 print:border-0 print:bg-white print:p-0 print:shadow-none">
         {mode === "staff" ? (
           <StaffDrumChartView
@@ -82,6 +92,7 @@ export function ChartNotationPanel({
             tempo={tempo}
             pattern={pattern}
             voiceLabels={voiceLabels}
+            playheadIndex={playheadIndex}
           />
         ) : (
           <DrumChartView
@@ -92,6 +103,7 @@ export function ChartNotationPanel({
             tempo={tempo}
             pattern={pattern}
             voiceLabels={voiceLabels}
+            playheadIndex={playheadIndex}
           />
         )}
       </div>
