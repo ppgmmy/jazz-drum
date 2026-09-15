@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChartActions } from "@/components/ChartActions";
-import { DrumChartView } from "@/components/DrumChartView";
+import { ChartNotationPanel } from "@/components/ChartNotationPanel";
 import { SongPlayer } from "@/components/SongPlayer";
 import { SiteFooter, SiteHeader } from "@/components/SiteSections";
 import { getAllChartSlugs } from "@/data/charts";
@@ -101,41 +100,35 @@ export default async function ChartPage({ params }: PageProps) {
               分段鼓譜
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted print:hidden">
-              播放上面歌曲，對到該段再打。譜面多數為 4 小節、十六分細分（含
-              ghost／fill）；每段可分開下載或列印。手機請橫向捲動查看完整格子。
+              預設為標準五線鼓譜（Percussion）；也可切換格子譜。多數段落 4
+              小節、十六分細分（含 ghost／fill）。手機請橫向捲動。
             </p>
 
             <div className="mt-8 space-y-12">
               {chart.sections.map((section, index) => {
-                const svgId = `chart-${chart.slug}-${index}`;
+                const svgIdBase = `chart-${chart.slug}-${index}`;
                 return (
                   <article key={section.label} className="scroll-mt-28">
-                    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-                      <div>
-                        <h3 className="font-display text-xl text-brass-hot sm:text-2xl">
-                          {section.label}
-                        </h3>
-                        {section.description ? (
-                          <p className="mt-2 max-w-2xl text-sm text-muted">
-                            {section.description}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="print:hidden">
-                        <ChartActions title={`${chart.title}-${section.label}`} chartSvgId={svgId} />
-                      </div>
+                    <div className="mb-4">
+                      <h3 className="font-display text-xl text-brass-hot sm:text-2xl">
+                        {section.label}
+                      </h3>
+                      {section.description ? (
+                        <p className="mt-2 max-w-2xl text-sm text-muted">
+                          {section.description}
+                        </p>
+                      ) : null}
                     </div>
-                    <div className="overflow-x-auto rounded-[1.5rem] border border-white/10 bg-ivory/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5 print:border-0 print:bg-white print:p-0 print:shadow-none">
-                      <DrumChartView
-                        id={svgId}
-                        title={chart.title}
-                        sectionLabel={section.label}
-                        meter={chart.meter}
-                        tempo={chart.tempo}
-                        pattern={section.pattern}
-                        voiceLabels={chart.voiceLabels}
-                      />
-                    </div>
+                    <ChartNotationPanel
+                      svgIdBase={svgIdBase}
+                      downloadTitle={`${chart.title}-${section.label}`}
+                      title={chart.title}
+                      sectionLabel={section.label}
+                      meter={chart.meter}
+                      tempo={chart.tempo}
+                      pattern={section.pattern}
+                      voiceLabels={chart.voiceLabels}
+                    />
                   </article>
                 );
               })}
