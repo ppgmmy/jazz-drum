@@ -46,7 +46,8 @@ export function playPad(
     filter.type = pad.id === "hihat" ? "highpass" : "bandpass";
     filter.frequency.value = pad.id === "hihat" ? 6000 : 1800;
     noiseGain.gain.setValueAtTime(
-      (pad.id === "snare" ? 0.7 : 0.35) * velocity,
+      (pad.id === "snare" ? 0.7 : pad.id === "hihat" ? 0.18 : 0.35) *
+        velocity,
       when,
     );
     noiseGain.gain.exponentialRampToValueAtTime(
@@ -119,6 +120,24 @@ export type ScheduledHit = {
   velocity: number;
 };
 
+/** 譜面播放時：踩鑔／Ride 當拍子感，音量要低過踢／军，唔好蓋住鼓聲 */
+function chartVoiceMix(voice: DrumVoice): number {
+  switch (voice) {
+    case "ride":
+      return 0.42;
+    case "hihat":
+      return 0.38;
+    case "snare":
+      return 1;
+    case "kick":
+      return 1.05;
+    default: {
+      const _exhaustive: never = voice;
+      return _exhaustive;
+    }
+  }
+}
+
 /** 某一格要打哪些聲部 */
 export function hitsAtCell(
   pattern: ChartPattern,
@@ -129,7 +148,7 @@ export function hitsAtCell(
   const hits: ScheduledHit[] = [];
   for (const voice of voices) {
     const cell = pattern.voices[voice][cellIndex] ?? "";
-    const velocity = cellVelocity(cell);
+    const velocity = cellVelocity(cell) * chartVoiceMix(voice);
     if (velocity <= 0) continue;
     hits.push({
       voice,
