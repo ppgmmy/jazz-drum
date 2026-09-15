@@ -180,7 +180,7 @@ export function ResourcesTeaser() {
             資源庫：歌曲鼓譜
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-            流行經典與爵士 groove 都有：Billie Jean、晴天、海闊天空、So What…
+            每首都有成歌影片＋分段鼓譜：Billie Jean、晴天、海闊天空、So What…
           </p>
         </div>
         <Link

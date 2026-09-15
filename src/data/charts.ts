@@ -17,6 +17,12 @@ export type ChartPattern = {
   voices: Record<DrumVoice, Cell[]>;
 };
 
+export type ChartSection = {
+  label: string;
+  description?: string;
+  pattern: ChartPattern;
+};
+
 export type DrumChart = {
   slug: string;
   title: string;

@@ -1,7 +1,7 @@
 import {
   VOICE_LABELS,
   type Cell,
-  type DrumChart,
+  type ChartPattern,
   type DrumVoice,
 } from "@/data/charts";
 
@@ -25,21 +25,34 @@ function cellGlyph(cell: Cell) {
 }
 
 type DrumChartViewProps = {
-  chart: DrumChart;
   id?: string;
+  title: string;
+  sectionLabel?: string;
+  meter: string;
+  tempo: string;
+  pattern: ChartPattern;
+  voiceLabels?: Partial<Record<DrumVoice, string>>;
 };
 
-export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) {
-  const { pattern } = chart;
+export function DrumChartView({
+  id = "drum-chart",
+  title,
+  sectionLabel,
+  meter,
+  tempo,
+  pattern,
+  voiceLabels,
+}: DrumChartViewProps) {
   const cellsPerBar = pattern.beatsPerBar * pattern.perBeat;
   const totalCells = pattern.bars * cellsPerBar;
   const labelWidth = 92;
   const cellWidth = 28;
   const rowHeight = 36;
-  const topPad = 56;
+  const topPad = sectionLabel ? 72 : 56;
   const bottomPad = 36;
   const width = labelWidth + totalCells * cellWidth + 24;
   const height = topPad + VOICES.length * rowHeight + bottomPad;
+  const heading = sectionLabel ? `${title} · ${sectionLabel}` : title;
 
   return (
     <svg
@@ -47,7 +60,7 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
       viewBox={`0 0 ${width} ${height}`}
       className="h-auto w-full"
       role="img"
-      aria-label={`${chart.title} 鼓譜`}
+      aria-label={`${heading} 鼓譜`}
     >
       <rect width={width} height={height} fill="#f7f1e6" rx="12" />
       <text
@@ -57,7 +70,7 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
         fontFamily="var(--font-display), Georgia, serif"
         fontSize="18"
       >
-        {chart.title}
+        {heading}
       </text>
       <text
         x={width - 16}
@@ -67,8 +80,19 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
         fontFamily="var(--font-mono), monospace"
         fontSize="11"
       >
-        {chart.meter} · {chart.tempo}
+        {meter} · {tempo}
       </text>
+      {sectionLabel ? (
+        <text
+          x={16}
+          y={50}
+          fill="#8a6a3a"
+          fontFamily="var(--font-body), sans-serif"
+          fontSize="12"
+        >
+          對片練習段落
+        </text>
+      ) : null}
 
       {VOICES.map((voice, row) => {
         const y = topPad + row * rowHeight;
@@ -81,7 +105,7 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
               fontFamily="var(--font-body), sans-serif"
               fontSize="12"
             >
-              {chart.voiceLabels?.[voice] ?? VOICE_LABELS[voice]}
+              {voiceLabels?.[voice] ?? VOICE_LABELS[voice]}
             </text>
             <line
               x1={labelWidth}
@@ -152,26 +176,24 @@ export function DrumChartView({ chart, id = "drum-chart" }: DrumChartViewProps) 
         );
       })}
 
-      <g>
-        {Array.from({ length: pattern.bars * pattern.beatsPerBar }, (_, beat) => {
-          const index = beat * pattern.perBeat;
-          const x = labelWidth + index * cellWidth + cellWidth / 2;
-          const beatInBar = (beat % pattern.beatsPerBar) + 1;
-          return (
-            <text
-              key={`beat-${beat}`}
-              x={x}
-              y={height - 12}
-              textAnchor="middle"
-              fill="#8a6a3a"
-              fontFamily="var(--font-mono), monospace"
-              fontSize="10"
-            >
-              {beatInBar}
-            </text>
-          );
-        })}
-      </g>
+      {Array.from({ length: pattern.bars * pattern.beatsPerBar }, (_, beat) => {
+        const index = beat * pattern.perBeat;
+        const x = labelWidth + index * cellWidth + cellWidth / 2;
+        const beatInBar = (beat % pattern.beatsPerBar) + 1;
+        return (
+          <text
+            key={`beat-${beat}`}
+            x={x}
+            y={height - 12}
+            textAnchor="middle"
+            fill="#8a6a3a"
+            fontFamily="var(--font-mono), monospace"
+            fontSize="10"
+          >
+            {beatInBar}
+          </text>
+        );
+      })}
 
       <text
         x={16}

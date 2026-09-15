@@ -13,7 +13,7 @@ const LEVEL_ORDER: ChartLevel[] = ["入門", "進階", "挑戰"];
 export const metadata = {
   title: "資源庫｜Soft Ride 鼓譜",
   description:
-    "爵士與流行歌曲鼓譜練習庫：Billie Jean、晴天、So What、Take Five 等 groove 譜面。",
+    "先聽成首歌，再練分段鼓譜。流行與爵士經典：Billie Jean、晴天、海闊天空、So What、Take Five…",
 };
 
 export default function ResourcesPage() {
@@ -40,7 +40,7 @@ export default function ResourcesPage() {
             資源庫：歌曲鼓譜
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-            爵士 groove 與流行經典並排：可練習、可下載、可列印。先鎖時間感，再玩花巧。
+            每首歌都有完整影片＋分段鼓譜。先聽成首，再對主歌／副歌練習。
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3 print:hidden">
