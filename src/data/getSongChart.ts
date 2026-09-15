@@ -9,7 +9,7 @@ export type SongChart = DrumChart & {
   sections: ChartSection[];
 };
 
-/** 未標 startSec 嘅段落，按 tempo × 小節數累加估算影片位置 */
+/** 未標 startSec 嘅段落，按 tempo × 小節數累加估算；並用下一段開始時間填 endSec */
 function withEstimatedStarts(
   sections: ChartSection[],
   tempo: string,
@@ -18,15 +18,29 @@ function withEstimatedStarts(
   const bpm = parseTempoBpm(tempo);
   let cursor = Math.max(0, introSec);
 
-  return sections.map((section) => {
+  const withStarts = sections.map((section) => {
     const startSec =
       section.startSec !== undefined
         ? section.startSec
         : Math.round(cursor * 10) / 10;
     const beats = section.pattern.bars * section.pattern.beatsPerBar;
     const durationSec = (beats * 60) / Math.max(1, bpm);
-    cursor = startSec + durationSec;
+    cursor = Math.max(cursor, startSec) + durationSec;
     return { ...section, startSec };
+  });
+
+  return withStarts.map((section, index) => {
+    if (section.endSec !== undefined) return section;
+    const next = withStarts[index + 1];
+    if (next?.startSec !== undefined) {
+      return { ...section, endSec: next.startSec };
+    }
+    const beats = section.pattern.bars * section.pattern.beatsPerBar;
+    const durationSec = (beats * 60) / Math.max(1, bpm);
+    return {
+      ...section,
+      endSec: Math.round((section.startSec! + durationSec) * 10) / 10,
+    };
   });
 }
 

@@ -154,6 +154,9 @@ export default async function ChartPage({ params }: PageProps) {
                         songStartSec={
                           chart.youtubeId ? section.startSec : undefined
                         }
+                        songEndSec={
+                          chart.youtubeId ? section.endSec : undefined
+                        }
                         sectionId={`${chart.slug}-${index}`}
                       />
                     </article>
@@ -166,7 +169,7 @@ export default async function ChartPage({ params }: PageProps) {
               <h2 className="font-display text-2xl text-ivory">怎麼打完整首</h2>
               <ol className="mt-5 space-y-4 text-sm leading-relaxed text-muted">
                 <li>1. 先聽完整首歌，對照上方「全曲結構」記住進出位置。</li>
-                <li>2. 逐段練熟：勾「跟歌聲」播鼓＋歌，聽住對到去邊段。</li>
+                <li>2. 逐段練熟：勾「跟歌聲」——鼓會鎖住影片時間軸；播到邊度鼓就打到邊度，段落結束自動停。</li>
                 <li>3. 再開影片由第 1 段順打到最後，中間只換譜不換感覺。</li>
                 <li>4. 整首串連：寧可少花，也要穩在 pocket。</li>
               </ol>

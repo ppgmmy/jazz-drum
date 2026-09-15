@@ -248,6 +248,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "", "X", "", "g", "", "", "", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "", "x", "", "x", "", "", ""], 8),
         }),
+        0,
       ),
       section(
         "2. 主題（8 小節）",
@@ -266,6 +267,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ["x", "", "x", "", "", "", "x", "", "", "", "x", ""],
           ),
         }),
+        28,
       ),
       section(
         "3. Solo 陪襯（8 小節）",
@@ -278,6 +280,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "", "X", "", "g", "", "", "", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "", "x", "", "", "", "", ""], 8),
         }),
+        95,
       ),
       section(
         "4. 主題再現＋收（8 小節）",
@@ -302,6 +305,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ["", "", "", "", "x", "", "", "", "x", "", "x", ""],
           ),
         }),
+        420,
       ),
     ],
   },
@@ -321,6 +325,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "g", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "x"], 8),
         }),
+        0,
       ),
       section(
         "2. 主題（8 小節）",
@@ -342,6 +347,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        24,
       ),
       section(
         "3. Solo 陪襯（8 小節）",
@@ -355,6 +361,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "g", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", ""], 8),
         }),
+        90,
       ),
       section(
         "4. 再現／收（8 小節）",
@@ -368,6 +375,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: concat(repeat(["", "", "g", "X", "", ""], 6), ["g", "", "g", "X", "g", ""], ["", "g", "X", "", "", ""]),
           kick: concat(repeat(["x", "", "", "", "", "x"], 6), ["x", "", "", "", "", ""], ["x", "", "", "", "", ""]),
         }),
+        400,
       ),
     ],
   },
@@ -386,6 +394,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: repeat(["x", "", "", "", "", "x", "", ""], 8),
         }),
+        0,
       ),
       section(
         "2. 主題 A（8 小節）",
@@ -412,6 +421,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        20,
       ),
       section(
         "3. 主題 B／橋（8 小節）",
@@ -430,6 +440,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ["", "", "x", "", "x", "", "", ""],
           ),
         }),
+        52,
       ),
       section(
         "4. Solo 陪襯（8 小節）",
@@ -442,6 +453,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: repeat(["x", "", "", "", "", "", "", ""], 8),
         }),
+        120,
       ),
       section(
         "5. 再現／尾（8 小節）",
@@ -454,6 +466,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: concat(featherSnare(7), ["", "g", "g", "X", "g", "", "X", ""]),
           kick: concat(repeat(["x", "", "", "", "", "x", "", ""], 7), ["", "", "", "", "x", "", "x", ""]),
         }),
+        380,
       ),
     ],
   },
@@ -479,6 +492,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: repeat(["x", "", "", "", "", "", "", ""], 8),
         }),
+        0,
       ),
       section(
         "2. 主題（8 小節）",
@@ -498,6 +512,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        22,
       ),
       section(
         "3. Solo 陪襯（8 小節）",
@@ -510,6 +525,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: cells(64),
         }),
+        100,
       ),
       section(
         "4. 主題再現＋尾 Fill（8 小節）",
@@ -522,6 +538,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: concat(featherSnare(6), ["", "g", "g", "X", "g", "", "X", ""], ["g", "", "X", "", "", "", "", ""]),
           kick: concat(repeat(["x", "", "", "", "", "", "", ""], 6), ["", "", "", "", "x", "", "x", ""], ["x", "", "", "", "", "", "", ""]),
         }),
+        360,
       ),
     ],
   },
@@ -621,6 +638,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: repeat(["x", "", "", "x", "", "", "", ""], 8),
         }),
+        0,
       ),
       section(
         "2. 主題（8 小節）",
@@ -647,6 +665,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        18,
       ),
       section(
         "3. Solo 陪襯（8 小節）",
@@ -659,6 +678,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: repeat(["x", "", "", "", "", "", "", ""], 8),
         }),
+        90,
       ),
       section(
         "4. 再現／尾（8 小節）",
@@ -680,6 +700,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ["x", "", "", "", "", "", "", ""],
           ),
         }),
+        300,
       ),
     ],
   },
@@ -710,7 +731,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: fourFloor16(8),
           snare: backbeat16(8, billieJeanGhosts(8)),
         }),
-        26,
+        27,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -737,7 +758,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: fourFloor16(8),
           snare: backbeat16(8, billieJeanGhosts(8)),
         }),
-        82,
+        83,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -765,7 +786,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
-        140,
+        141,
       ),
       section(
         "7. 副歌結束（8 小節）",
@@ -809,7 +830,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: sevenNationKick(8),
           snare: backbeat16(8),
         }),
-        33,
+        32,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -840,7 +861,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: sevenNationKick(8),
           snare: backbeat16(8),
         }),
-        80,
+        78,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -852,7 +873,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: sevenNationKick(8),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [10, "X"], [12, "X"], [14, "g"]])),
         }),
-        100,
+        101,
       ),
       section(
         "6. Bridge（8 小節）",
@@ -864,7 +885,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [4, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
-        125,
+        124,
       ),
       section(
         "7. Riff／尾（8 小節）",
@@ -908,7 +929,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: teenSpiritChorusKick(8),
           snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
         }),
-        7,
+        8,
       ),
       section(
         "3. 主歌（8 小節・收）",
@@ -946,7 +967,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[0, "g"], [2, "g"], [4, "X"], [6, "g"], [8, "X"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
-        40,
+        41,
       ),
       section(
         "5. 副歌（8 小節・放）",
@@ -958,7 +979,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: teenSpiritChorusKick(8),
           snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
         }),
-        55,
+        58,
       ),
       section(
         "6. 主歌 2（8 小節・收）",
@@ -985,7 +1006,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [6, "X"], [8, "X"], [10, "g"], [12, "X"], [14, "X"]]),
           ),
         }),
-        100,
+        101,
       ),
       section(
         "8. 副歌 2（8 小節・放）",
@@ -997,7 +1018,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: teenSpiritChorusKick(8),
           snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
         }),
-        115,
+        117,
       ),
       section(
         "9. Solo（8 小節）",
@@ -1089,7 +1110,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: bitesDustKick(8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
-        90,
+        91,
       ),
       section(
         "6. 間奏（8 小節）",
@@ -1101,7 +1122,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: bitesDustKick(8),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "g"]])),
         }),
-        115,
+        116,
       ),
       section(
         "7. 副歌結束（8 小節）",
@@ -1113,7 +1134,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: concat(bitesDustKick(7), place(16, [[0, "x"], [8, "x"]])),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [12, "X"]])),
         }),
-        140,
+        142,
       ),
     ],
   },
@@ -1154,7 +1175,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [3, "x"], [6, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
-        35,
+        33,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1171,7 +1192,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(3), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(3), place(16, [[4, "X"], [8, "X"], [12, "X"], [14, "g"], [15, "X"]])),
         }),
-        60,
+        61,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1183,7 +1204,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [3, "x"], [6, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
-        90,
+        89,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1200,7 +1221,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(3), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(3), backbeat16(1)),
         }),
-        115,
+        117,
       ),
       section(
         "6. Bridge／停頓（8 小節）",
@@ -1217,7 +1238,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(4), cells(32), place(16, [[4, "X"], [8, "X"], [12, "X"], [14, "g"], [15, "X"]]), backbeat16(1)),
         }),
-        145,
+        148,
       ),
       section(
         "7. 副歌結束（8 小節）",
@@ -1233,7 +1254,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(6), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"], [8, "X"]])),
         }),
-        175,
+        176,
       ),
     ],
   },
@@ -1264,7 +1285,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
           snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
         }),
-        16,
+        14,
       ),
       section(
         "3. 結他／全套鼓（8 小節）",
@@ -1283,7 +1304,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
-        68,
+        72,
       ),
       section(
         "4. Stomp 再現（8 小節）",
@@ -1295,7 +1316,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
           snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
         }),
-        95,
+        96,
       ),
       section(
         "5. 結尾（8 小節）",
@@ -1315,7 +1336,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [12, "X"]]),
           ),
         }),
-        110,
+        112,
       ),
     ],
   },
@@ -1353,7 +1374,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8, ghostsEveryBar(8, [3, 14])),
         }),
-        38,
+        36,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1365,7 +1386,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [11, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
-        68,
+        64,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1384,7 +1405,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8, ghostsEveryBar(8, [3, 14])),
         }),
-        95,
+        92,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1402,7 +1423,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [6, "g"], [8, "X"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
-        125,
+        120,
       ),
       section(
         "6. Solo（8 小節）",
@@ -1414,7 +1435,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [7, 15])),
         }),
-        155,
+        154,
       ),
       section(
         "7. 副歌尾（8 小節）",
@@ -1489,7 +1510,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
-        45,
+        48,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1508,7 +1529,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [10, "g"], [12, "X"], [14, "g"]])),
         }),
-        75,
+        80,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1534,7 +1555,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
-        110,
+        112,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1553,7 +1574,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
-        140,
+        144,
       ),
       section(
         "6. 間奏（8 小節）",
@@ -1574,7 +1595,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "g"], [15, "X"]])),
         }),
-        175,
+        176,
       ),
       section(
         "7. 副歌／尾奏（8 小節）",
@@ -1633,7 +1654,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
-        50,
+        52,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1645,7 +1666,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
-        85,
+        88,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1664,7 +1685,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
-        120,
+        124,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1676,7 +1697,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"], [14, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
-        155,
+        160,
       ),
       section(
         "6. 大尾（8 小節）",
@@ -1700,7 +1721,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [12, "X"], [15, "X"]]),
           ),
         }),
-        190,
+        196,
       ),
     ],
   },

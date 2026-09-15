@@ -19,6 +19,7 @@ type ChartNotationPanelProps = {
   pattern: ChartPattern;
   voiceLabels?: Partial<Record<DrumVoice, string>>;
   songStartSec?: number;
+  songEndSec?: number;
   sectionId?: string;
 };
 
@@ -32,6 +33,7 @@ export function ChartNotationPanel({
   pattern,
   voiceLabels,
   songStartSec,
+  songEndSec,
   sectionId,
 }: ChartNotationPanelProps) {
   const [mode, setMode] = useState<NotationMode>("staff");
@@ -85,6 +87,7 @@ export function ChartNotationPanel({
         playheadIndex={playheadIndex}
         onPlayheadChange={setPlayheadIndex}
         songStartSec={songStartSec}
+        songEndSec={songEndSec}
         sectionId={sectionId}
       />
 

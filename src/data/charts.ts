@@ -23,6 +23,8 @@ export type ChartSection = {
   pattern: ChartPattern;
   /** 影片入面呢段大概開始秒數（跟歌練習用） */
   startSec?: number;
+  /** 呢段喺影片大概結束秒數（跟歌時鼓聲對齊到呢度就停／切下一段） */
+  endSec?: number;
 };
 
 export type DrumChart = {

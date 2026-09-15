@@ -6,6 +6,7 @@ export type YTPlayer = {
   setVolume: (volume: number) => void;
   getVolume: () => number;
   getPlayerState: () => number;
+  getCurrentTime: () => number;
   destroy: () => void;
 };
 

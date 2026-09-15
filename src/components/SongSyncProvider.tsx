@@ -22,6 +22,8 @@ type SongSyncContextValue = {
   /** 同一時間只得一段鼓譜播放：claim 會停其他段 */
   claimPlayback: (ownerId: string) => void;
   registerStopper: (ownerId: string, stop: Stopper) => () => void;
+  /** 影片而家播到邊秒；未 ready 回 null */
+  getSongTime: () => number | null;
 };
 
 const SongSyncContext = createContext<SongSyncContextValue | null>(null);
@@ -37,6 +39,16 @@ export function SongSyncProvider({ children }: { children: ReactNode }) {
   const registerPlayer = useCallback((player: YTPlayer | null) => {
     playerRef.current = player;
     setReady(Boolean(player));
+  }, []);
+
+  const getSongTime = useCallback((): number | null => {
+    const player = playerRef.current;
+    if (!player) return null;
+    try {
+      return player.getCurrentTime();
+    } catch {
+      return null;
+    }
   }, []);
 
   const pauseSong = useCallback(() => {
@@ -89,6 +101,7 @@ export function SongSyncProvider({ children }: { children: ReactNode }) {
       pauseSong,
       claimPlayback,
       registerStopper,
+      getSongTime,
     }),
     [
       ready,
@@ -97,6 +110,7 @@ export function SongSyncProvider({ children }: { children: ReactNode }) {
       pauseSong,
       claimPlayback,
       registerStopper,
+      getSongTime,
     ],
   );
 

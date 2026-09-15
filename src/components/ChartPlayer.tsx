@@ -22,8 +22,13 @@ type ChartPlayerProps = {
   onPlayheadChange: (index: number | null) => void;
   /** 影片對應呢段開始秒數；有值就可跟歌聲 */
   songStartSec?: number;
+  /** 呢段喺影片大概結束秒數；跟歌超過就停鼓，避免打入下一段 */
+  songEndSec?: number;
   sectionId?: string;
 };
+
+/** YouTube seek／起播延遲補償 */
+const SONG_LATENCY_SEC = 0.08;
 
 export function ChartPlayer({
   pattern,
@@ -32,6 +37,7 @@ export function ChartPlayer({
   playheadIndex,
   onPlayheadChange,
   songStartSec,
+  songEndSec,
   sectionId,
 }: ChartPlayerProps) {
   const songSync = useOptionalSongSync();
@@ -48,14 +54,17 @@ export function ChartPlayer({
   const rideIsHatRef = useRef(false);
   const onPlayheadChangeRef = useRef(onPlayheadChange);
   const songStartSecRef = useRef(songStartSec);
+  const songEndSecRef = useRef(songEndSec);
+  const scheduledKeysRef = useRef(new Set<string>());
   const reactId = useId();
   const ownerId = sectionId ?? reactId;
 
   const [bpm, setBpm] = useState(() => parseTempoBpm(tempo));
   const [playing, setPlaying] = useState(false);
-  const [loop, setLoop] = useState(true);
+  const [loop, setLoop] = useState(songStartSec === undefined);
   const [withSong, setWithSong] = useState(songStartSec !== undefined);
   const [error, setError] = useState<string | null>(null);
+  const [syncLabel, setSyncLabel] = useState<string | null>(null);
 
   const cells = totalCells(pattern);
   const chartKey = `${tempo}|${pattern.bars}|${pattern.beatsPerBar}|${pattern.perBeat}`;
@@ -68,6 +77,7 @@ export function ChartPlayer({
   playingRef.current = playing;
   onPlayheadChangeRef.current = onPlayheadChange;
   songStartSecRef.current = songStartSec;
+  songEndSecRef.current = songEndSec;
   rideIsHatRef.current = /hi-?hat|踩鑔|鑔/i.test(voiceLabels?.ride ?? "");
 
   const clearTimer = () => {
@@ -82,7 +92,9 @@ export function ChartPlayer({
     playingRef.current = false;
     setPlaying(false);
     nextCellRef.current = 0;
+    scheduledKeysRef.current.clear();
     onPlayheadChangeRef.current(null);
+    setSyncLabel(null);
     if (opts?.pauseSong !== false && withSongRef.current) {
       songSync?.pauseSong();
     }
@@ -93,7 +105,6 @@ export function ChartPlayer({
 
   useEffect(() => {
     if (!songSync) return;
-    // 穩定 wrapper：永遠 call 最新 stopPlayback，畀其他段 claim 時停自己
     return songSync.registerStopper(ownerId, () => {
       stopPlaybackRef.current({ pauseSong: false });
     });
@@ -114,12 +125,26 @@ export function ChartPlayer({
     return audioRef.current;
   };
 
-  const scheduleAhead = () => {
-    const ctx = audioRef.current;
-    const noise = noiseRef.current;
-    const currentPattern = patternRef.current;
-    if (!ctx || !noise || !playingRef.current) return;
+  const triggerCell = (
+    ctx: AudioContext,
+    noise: AudioBuffer,
+    cellIndex: number,
+    when: number,
+  ) => {
+    const hits = hitsAtCell(patternRef.current, cellIndex, rideIsHatRef.current);
+    for (const hit of hits) {
+      playPad(ctx, getPad(hit.padId), noise, when, hit.velocity);
+    }
+    const delayMs = Math.max(0, (when - ctx.currentTime) * 1000);
+    const scheduledCell = cellIndex;
+    window.setTimeout(() => {
+      if (!playingRef.current) return;
+      onPlayheadChangeRef.current(scheduledCell);
+    }, delayMs);
+  };
 
+  const scheduleFree = (ctx: AudioContext, noise: AudioBuffer) => {
+    const currentPattern = patternRef.current;
     const total = totalCells(currentPattern);
     const step = secondsPerCell(currentPattern, bpmRef.current);
     const horizon = ctx.currentTime + 0.12;
@@ -129,38 +154,122 @@ export function ChartPlayer({
       if (cellIndex >= total) {
         if (loopRef.current) {
           nextCellRef.current = 0;
-          // 鼓循環時歌聲繼續，方便聽住對到歌邊度
           continue;
         }
         stopPlayback();
         return;
       }
 
-      const when = nextTimeRef.current;
-      const hits = hitsAtCell(currentPattern, cellIndex, rideIsHatRef.current);
-      for (const hit of hits) {
-        playPad(ctx, getPad(hit.padId), noise, when, hit.velocity);
+      triggerCell(ctx, noise, cellIndex, nextTimeRef.current);
+      nextCellRef.current = cellIndex + 1;
+      nextTimeRef.current = nextTimeRef.current + step;
+    }
+  };
+
+  const scheduleWithSong = (ctx: AudioContext, noise: AudioBuffer) => {
+    const startSec = songStartSecRef.current;
+    if (startSec === undefined) {
+      scheduleFree(ctx, noise);
+      return;
+    }
+
+    const songNowRaw = songSync?.getSongTime() ?? null;
+    if (songNowRaw === null) {
+      scheduleFree(ctx, noise);
+      return;
+    }
+
+    const songNow = songNowRaw + SONG_LATENCY_SEC;
+    const endSec = songEndSecRef.current;
+    if (endSec !== undefined && songNowRaw >= endSec - 0.03) {
+      stopPlayback({ pauseSong: true });
+      return;
+    }
+
+    const currentPattern = patternRef.current;
+    const total = totalCells(currentPattern);
+    const step = secondsPerCell(currentPattern, bpmRef.current);
+    const patternDur = total * step;
+    const elapsed = songNow - startSec;
+
+    if (elapsed < -0.2) {
+      setSyncLabel("對齊影片中…");
+      return;
+    }
+
+    if (!loopRef.current && elapsed >= patternDur) {
+      stopPlayback({ pauseSong: true });
+      return;
+    }
+
+    const loopIndex = loopRef.current
+      ? Math.max(0, Math.floor(elapsed / patternDur))
+      : 0;
+    const posInPattern = loopRef.current
+      ? ((elapsed % patternDur) + patternDur) % patternDur
+      : Math.max(0, elapsed);
+
+    const expectedCell = Math.floor(posInPattern / step);
+    const driftMs = Math.round((posInPattern - nextCellRef.current * step) * 1000);
+    if (Math.abs(driftMs) > 45) {
+      setSyncLabel(`鎖拍 ${driftMs > 0 ? "+" : ""}${driftMs}ms`);
+    } else {
+      setSyncLabel("已鎖拍");
+    }
+
+    const horizonSong = songNow + 0.14;
+    let cell = expectedCell;
+    let loopCursor = loopIndex;
+
+    if (scheduledKeysRef.current.size > 256) {
+      scheduledKeysRef.current.clear();
+    }
+
+    for (let guard = 0; guard < total * 3; guard += 1) {
+      if (cell >= total) {
+        if (!loopRef.current) break;
+        cell = 0;
+        loopCursor += 1;
       }
 
-      const delayMs = Math.max(0, (when - ctx.currentTime) * 1000);
-      const scheduledCell = cellIndex;
-      window.setTimeout(() => {
-        if (!playingRef.current) return;
-        onPlayheadChangeRef.current(scheduledCell);
-      }, delayMs);
+      const cellSongTime = startSec + loopCursor * patternDur + cell * step;
+      if (endSec !== undefined && cellSongTime >= endSec) break;
+      if (cellSongTime > horizonSong) break;
 
-      nextCellRef.current = cellIndex + 1;
-      nextTimeRef.current = when + step;
+      const key = `${loopCursor}:${cell}`;
+      if (!scheduledKeysRef.current.has(key)) {
+        scheduledKeysRef.current.add(key);
+        const when = ctx.currentTime + (cellSongTime - songNow);
+        if (when >= ctx.currentTime - 0.045) {
+          triggerCell(ctx, noise, cell, Math.max(when, ctx.currentTime));
+        }
+      }
+
+      nextCellRef.current = cell;
+      cell += 1;
+    }
+  };
+
+  const scheduleAhead = () => {
+    const ctx = audioRef.current;
+    const noise = noiseRef.current;
+    if (!ctx || !noise || !playingRef.current) return;
+
+    if (withSongRef.current && songStartSecRef.current !== undefined) {
+      scheduleWithSong(ctx, noise);
+    } else {
+      scheduleFree(ctx, noise);
     }
   };
 
   const startPlayback = async () => {
     setError(null);
-    // 一撳即刻停其他段，唔好等 AudioContext
     songSync?.claimPlayback(ownerId);
     try {
       const ctx = await ensureAudio();
       clearTimer();
+      scheduledKeysRef.current.clear();
+
       const startCell =
         playheadIndex !== null && playheadIndex < cells ? playheadIndex : 0;
       nextCellRef.current = startCell;
@@ -172,6 +281,9 @@ export function ChartPlayer({
         const step = secondsPerCell(patternRef.current, bpmRef.current);
         const offsetSec = startCell * step;
         songSync?.playSongFrom(songStartSecRef.current + offsetSec);
+        setSyncLabel("對齊影片中…");
+      } else {
+        setSyncLabel(null);
       }
 
       scheduleAhead();
@@ -193,18 +305,20 @@ export function ChartPlayer({
     };
   }, []);
 
-  // 只在換譜／換速度時重設
   useEffect(() => {
     clearTimer();
     playingRef.current = false;
     setPlaying(false);
     nextCellRef.current = 0;
+    scheduledKeysRef.current.clear();
     onPlayheadChangeRef.current(null);
     const nextBpm = parseTempoBpm(tempo);
     bpmRef.current = nextBpm;
     setBpm(nextBpm);
     setWithSong(songStartSec !== undefined);
-  }, [chartKey, tempo, songStartSec]);
+    setLoop(songStartSec === undefined);
+    setSyncLabel(null);
+  }, [chartKey, tempo, songStartSec, songEndSec]);
 
   const bar =
     playheadIndex === null
@@ -259,7 +373,7 @@ export function ChartPlayer({
           onChange={(event) => setLoop(event.target.checked)}
           className="accent-[var(--brass)]"
         />
-        循環
+        {canFollowSong && withSong ? "鼓型循環（歌繼續）" : "循環"}
       </label>
 
       {canFollowSong ? (
@@ -268,16 +382,26 @@ export function ChartPlayer({
             type="checkbox"
             checked={withSong}
             disabled={playing}
-            onChange={(event) => setWithSong(event.target.checked)}
+            onChange={(event) => {
+              setWithSong(event.target.checked);
+              if (event.target.checked) setLoop(true);
+            }}
             className="accent-[var(--brass)]"
           />
           跟歌聲
           {songStartSec !== undefined ? (
             <span className="font-mono text-xs text-brass">
               {formatClock(songStartSec)}
+              {songEndSec !== undefined ? `–${formatClock(songEndSec)}` : ""}
             </span>
           ) : null}
         </label>
+      ) : null}
+
+      {syncLabel ? (
+        <span className="rounded-full border border-brass/30 bg-brass/10 px-2.5 py-1 font-mono text-[11px] text-brass">
+          {syncLabel}
+        </span>
       ) : null}
 
       <p className="font-mono text-xs text-brass">
@@ -287,7 +411,7 @@ export function ChartPlayer({
 
       <p className="w-full text-xs text-muted sm:w-auto sm:flex-1 sm:text-right">
         {canFollowSong && withSong
-          ? "鼓聲＋影片歌聲一齊播，聽住就知打到歌邊段。"
+          ? "鼓聲鎖住影片時間軸：播到邊度鼓就打到邊度，唔會越打越甩拍。"
           : "只播這段鼓譜的鼓聲，游標會跟著走，方便對譜練習。"}
       </p>
 
