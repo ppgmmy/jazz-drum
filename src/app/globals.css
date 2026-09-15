@@ -122,3 +122,17 @@ body {
 .pad-hit {
   animation: pad-hit 0.18s ease-out;
 }
+
+@media print {
+  body {
+    background: white !important;
+    color: #101820 !important;
+  }
+
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+}

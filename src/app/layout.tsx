@@ -20,9 +20,12 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Soft Ride｜爵士鼓",
+  title: {
+    default: "Soft Ride｜爵士鼓",
+    template: "%s｜Soft Ride",
+  },
   description:
-    "Soft Ride 是爵士鼓練習空間：互動鼓組、swing 感覺與 pocket 練習路徑。",
+    "Soft Ride 是爵士鼓練習空間：互動鼓組、歌曲鼓譜資源庫，與 pocket 練習路徑。",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -3,6 +3,7 @@ import {
   FeelSection,
   Hero,
   PracticeSection,
+  ResourcesTeaser,
   SiteFooter,
   SiteHeader,
 } from "@/components/SiteSections";
@@ -16,6 +17,7 @@ export default function Home() {
         <JazzKit />
         <FeelSection />
         <PracticeSection />
+        <ResourcesTeaser />
       </main>
       <SiteFooter />
     </>
