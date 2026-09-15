@@ -72,7 +72,7 @@ export function ChartNotationPanel({
         <ChartActions title={downloadTitle} chartSvgId={activeId} />
       </div>
 
-      <div className="overflow-x-auto rounded-[1.5rem] sm:overflow-visible border border-white/10 bg-ivory/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5 print:border-0 print:bg-white print:p-0 print:shadow-none">
+      <div className="rounded-[1.5rem] border border-white/10 bg-ivory/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5 print:border-0 print:bg-white print:p-0 print:shadow-none">
         {mode === "staff" ? (
           <StaffDrumChartView
             id={staffId}
