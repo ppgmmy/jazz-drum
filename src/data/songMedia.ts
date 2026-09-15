@@ -1,6 +1,8 @@
 import type { ChartSection, Cell } from "@/data/charts";
 import {
   backbeat16,
+  billieJeanGhosts,
+  bitesDustKick,
   cells,
   concat,
   featherSnare,
@@ -9,8 +11,13 @@ import {
   hats16,
   hats8,
   place,
+  quarters16,
   repeat,
+  rest16,
+  sevenNationKick,
   swingRide,
+  teenSpiritChorusKick,
+  teenSpiritVerseKick,
 } from "@/data/patternHelpers";
 
 export type SongMedia = {
@@ -42,24 +49,25 @@ function ghostsEveryBar(bars: number, offsets: number[]): Array<[number, Cell]> 
 export const SONG_MEDIA: Record<string, SongMedia> = {
   "so-what": {
     youtubeId: "zqNTltOGh5c",
-    introSec: 8,
-    form: ["頭奏", "主題", "Solo 輪流", "主題再現", "尾聲"],
+    introSec: 0,
+    form: ["Bass／鋼琴 Intro", "主題 Head", "Solo 陪襯", "主題再現", "尾聲"],
     sections: [
       section(
-        "1. 頭奏（8 小節）",
-        "跟影片開頭：ride 輕、空間大；kick 幾乎不打，先把時間感擺穩。",
+        "1. Bass／鋼琴 Intro（8 小節）",
+        "原唱開頭幾乎無鼓：只輕點 hi-hat 腳在 2／4，ride／kick 留白，對住低音主題數拍。",
         groove({
           bars: 8,
           perBeat: 2,
-          ride: swingRide(8),
+          ride: cells(64),
           hihat: repeat(["", "", "x", "", "", "", "x", ""], 8),
-          snare: featherSnare(8),
+          snare: cells(64),
           kick: cells(64),
         }),
+        0,
       ),
       section(
         "2. 主題 Head（8 小節）",
-        "主題進來：2／4 輕 snare；kick 點骨架。這 8 小節循環對整段主題。",
+        "鼓進入：經典 swing ride「叮—叮叮」+ 2／4 feather snare；kick 只點骨架，勿蓋銅管呼應。",
         groove({
           bars: 8,
           perBeat: 2,
@@ -69,16 +77,17 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: concat(
             ...Array.from({ length: 4 }, () =>
               concat(
-                ["x", "", "", "", "", "", "", "x"],
                 ["x", "", "", "", "", "", "", ""],
+                ["x", "", "", "", "", "", "x", ""],
               ),
             ),
           ),
         }),
+        33,
       ),
       section(
         "3. Solo 陪襯（8 小節）",
-        "Solo 時只守 ride＋2／4；kick 停。每輪 solo 都用這段循環。",
+        "Solo 輪流時只守 ride＋2／4；kick 幾乎停，留空間給即興。每輪 solo 循環這段。",
         groove({
           bars: 8,
           perBeat: 2,
@@ -87,10 +96,11 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: featherSnare(8),
           kick: cells(64),
         }),
+        120,
       ),
       section(
         "4. 主題再現（8 小節）",
-        "回到主題，kick 可略密一點，但仍留白。",
+        "回到 Head 感覺；kick 可略密，但仍要鬆。",
         groove({
           bars: 8,
           perBeat: 2,
@@ -106,68 +116,46 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        420,
       ),
       section(
-        "5. 尾聲 Fill（8 小節）",
-        "前 6 小節維持主題；最後 2 小節小 fill 收束。",
+        "5. 尾聲（8 小節）",
+        "漸收：ride 更疏，最後兩小節輕 fill 收。",
         groove({
           bars: 8,
           perBeat: 2,
-          ride: concat(swingRide(6), ["x", "", "x", "x", "x", "x", "x", ""], ["x", "", "x", "", "x", "x", "", ""]),
+          ride: concat(swingRide(6), ["x", "", "x", "", "x", "", "", ""], ["x", "", "", "", "", "", "", ""]),
           hihat: repeat(["", "", "x", "", "", "", "x", ""], 8),
-          snare: concat(
-            featherSnare(6),
-            ["", "g", "X", "g", "X", "", "g", ""],
-            ["g", "X", "g", "X", "", "g", "X", ""],
-          ),
-          kick: concat(
-            ...Array.from({ length: 3 }, () =>
-              concat(
-                ["x", "", "", "", "", "", "", ""],
-                ["x", "", "", "", "", "", "", ""],
-              ),
-            ),
-            ["", "", "", "", "x", "", "x", ""],
-            ["x", "", "x", "", "x", "", "", ""],
-          ),
+          snare: concat(featherSnare(6), ["", "g", "X", "", "g", "", "X", ""], ["", "", "X", "", "", "", "", ""]),
+          kick: concat(cells(48), ["", "", "", "", "x", "", "x", ""], ["x", "", "", "", "", "", "", ""]),
         }),
+        480,
       ),
     ],
   },
+
   "take-five": {
     youtubeId: "tT9Eh8wNMkw",
-    introSec: 6,
-    form: ["Sax 主題", "鋼琴 Solo", "主題再現", "尾奏"],
+    introSec: 0,
+    form: ["鋼琴 Intro", "Sax 主題", "鋼琴 Solo", "鼓 Solo", "主題再現", "尾奏"],
     sections: [
       section(
-        "1. Sax 主題（5/4 × 8）",
-        "整段主題用 3+2 呼吸循環；Ride 不趕，第 4 拍 snare 要準。",
+        "1. 鋼琴 Intro（5/4 × 4）",
+        "原唱先鋼琴 vamp：此段無鼓／極輕 hi-hat，對住 3+2 呼吸數拍。",
         groove({
-          bars: 8,
+          bars: 4,
           perBeat: 2,
           beatsPerBar: 5,
-          ride: repeat(["x", "", "x", "x", "x", "", "x", "x", "x", ""], 8),
-          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 8),
-          snare: repeat(["", "", "", "", "X", "", "", "", "g", ""], 8),
-          kick: repeat(["x", "", "", "", "", "", "x", "", "", ""], 8),
+          ride: cells(40),
+          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 4),
+          snare: cells(40),
+          kick: cells(40),
         }),
+        0,
       ),
       section(
-        "2. 鋼琴 Solo（5/4 × 8）",
-        "Solo 時可加 kick 推進，仍守 3+2。",
-        groove({
-          bars: 8,
-          perBeat: 2,
-          beatsPerBar: 5,
-          ride: repeat(["x", "", "x", "x", "x", "", "x", "x", "x", "x"], 8),
-          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 8),
-          snare: repeat(["", "", "g", "", "X", "", "", "", "g", ""], 8),
-          kick: repeat(["x", "", "", "x", "", "", "x", "", "x", ""], 8),
-        }),
-      ),
-      section(
-        "3. 主題再現（5/4 × 8）",
-        "回到主題感覺，動態收回一層。",
+        "2. Sax 主題（5/4 × 8）",
+        "Morello 經典：Ride 走 3+2；snare 落在第 4 拍；kick 點 1 與銜接處。",
         groove({
           bars: 8,
           perBeat: 2,
@@ -177,31 +165,73 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "", "", "X", "", "", "", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "", "x", "", "", ""], 8),
         }),
+        18,
       ),
       section(
-        "4. 尾奏（5/4 × 4）",
-        "最後幾輪漸收；尾拍可輕 fill。",
+        "3. 鋼琴 Solo（5/4 × 8）",
+        "維持 3+2；可略加 kick 推進，動態仍要讓鋼琴。",
+        groove({
+          bars: 8,
+          perBeat: 2,
+          beatsPerBar: 5,
+          ride: repeat(["x", "", "x", "x", "x", "", "x", "x", "x", "x"], 8),
+          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 8),
+          snare: repeat(["", "", "g", "", "X", "", "", "", "g", ""], 8),
+          kick: repeat(["x", "", "", "x", "", "", "x", "", "x", ""], 8),
+        }),
+        90,
+      ),
+      section(
+        "4. 鼓 Solo（5/4 × 8）",
+        "向 Morello 致敬的練習段：snare 對話增多，但仍卡在 5/4 骨架上。",
+        groove({
+          bars: 8,
+          perBeat: 2,
+          beatsPerBar: 5,
+          ride: repeat(["x", "", "x", "", "x", "", "x", "", "x", ""], 8),
+          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 8),
+          snare: repeat(["g", "X", "g", "X", "X", "g", "X", "g", "X", ""], 8),
+          kick: repeat(["x", "", "", "", "x", "", "x", "", "", ""], 8),
+        }),
+        200,
+      ),
+      section(
+        "5. 主題再現（5/4 × 8）",
+        "回到主題 ride／snare；動態收回。",
+        groove({
+          bars: 8,
+          perBeat: 2,
+          beatsPerBar: 5,
+          ride: repeat(["x", "", "x", "x", "x", "", "x", "x", "x", ""], 8),
+          hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 8),
+          snare: repeat(["", "", "", "", "X", "", "", "", "", ""], 8),
+          kick: repeat(["x", "", "", "", "", "", "x", "", "", ""], 8),
+        }),
+        280,
+      ),
+      section(
+        "6. 尾奏（5/4 × 4）",
+        "漸收；最後一小節可輕 fill。",
         groove({
           bars: 4,
           perBeat: 2,
           beatsPerBar: 5,
           ride: concat(
             repeat(["x", "", "x", "x", "x", "", "x", "x", "x", ""], 3),
-            ["x", "", "x", "", "x", "x", "x", "", "", ""],
+            ["x", "", "x", "", "x", "", "", "", "", ""],
           ),
           hihat: repeat(["", "", "", "", "x", "", "", "", "", ""], 4),
           snare: concat(
             repeat(["", "", "", "", "X", "", "", "", "", ""], 3),
-            ["", "g", "X", "g", "X", "", "X", "", "", ""],
+            ["", "g", "g", "X", "X", "", "", "", "", ""],
           ),
-          kick: concat(
-            repeat(["x", "", "", "", "", "", "x", "", "", ""], 3),
-            ["x", "", "", "", "", "", "", "", "x", ""],
-          ),
+          kick: repeat(["x", "", "", "", "", "", "x", "", "", ""], 4),
         }),
+        320,
       ),
     ],
   },
+
   "blue-train": {
     youtubeId: "YjRbmtrDJI4",
     introSec: 0,
@@ -497,11 +527,25 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   },
   moanin: {
     youtubeId: "fsJ3JjpZyoA",
-    form: ["主題", "Solo", "呼應", "主題再現"],
+    introSec: 0,
+    form: ["鋼琴 Intro", "主題", "Solo", "呼應", "主題再現"],
     sections: [
       section(
-        "1. 主題 Hard Bop（8 小節）",
-        "Snare 可咬；ride 仍要鬆。先慢練一倍。",
+        "1. 鋼琴 Intro（8 小節・疏）",
+        "原唱開頭鋼琴主題先出：此段只輕點 hi-hat 腳 2／4，ride／kick 留白對數拍。",
+        groove({
+          bars: 8,
+          perBeat: 3,
+          ride: cells(96),
+          hihat: repeat(["", "", "", "x", "", "", "", "", "", "x", "", ""], 8),
+          snare: cells(96),
+          kick: cells(96),
+        }),
+        0,
+      ),
+      section(
+        "2. 主題 Hard Bop（8 小節）",
+        "鼓進入：shuffle ride；snare 可咬；kick 點 1 與銜接。先慢練一倍。",
         groove({
           bars: 8,
           perBeat: 3,
@@ -510,9 +554,10 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "g", "X", "", "g", "", "", "g", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "x", "x", "", "", "", "", ""], 8),
         }),
+        18,
       ),
       section(
-        "2. Solo 陪襯（8 小節）",
+        "3. Solo 陪襯（8 小節）",
         "Solo 時略收，仍保持 shuffle 推進。",
         groove({
           bars: 8,
@@ -522,9 +567,10 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "", "X", "", "g", "", "", "", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "x", "", "", "", "", "", ""], 8),
         }),
+        55,
       ),
       section(
-        "3. 呼應段（8 小節）",
+        "4. 呼應段（8 小節）",
         "樂隊呼應：偶發 snare 咬一下；第 8 小節 fill。",
         groove({
           bars: 8,
@@ -543,9 +589,10 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ["", "", "", "", "x", "", "", "", "x", "", "x", ""],
           ),
         }),
+        120,
       ),
       section(
-        "4. 主題再現（8 小節）",
+        "5. 主題再現（8 小節）",
         "再現主題 groove，收在強拍。",
         groove({
           bars: 8,
@@ -555,6 +602,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           snare: repeat(["", "", "g", "X", "", "g", "", "", "g", "X", "", ""], 8),
           kick: repeat(["x", "", "", "", "", "x", "x", "", "", "", "", ""], 8),
         }),
+        180,
       ),
     ],
   },
@@ -638,180 +686,149 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
   "billie-jean": {
     youtubeId: "Zi_XLOBDo_Y",
     introSec: 0,
-    form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "間奏", "副歌結束"],
+    form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Bridge 間奏", "副歌結束"],
     sections: [
       section(
         "1. Intro（8 小節）",
-        "四落地 kick＋2／4 snare；HH 八分。先對死地板感。",
+        "原唱經典：kick 四落地；snare 只在 2／4；HH 八分；ghost 在 e／a。先把地板感鎖死。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
           kick: fourFloor16(8),
-          snare: backbeat16(8, ghostsEveryBar(8, [3, 5, 11, 13])),
+          snare: backbeat16(8, billieJeanGhosts(8)),
         }),
+        0,
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "維持 Intro groove；人聲進來後動態再收一點。",
+        "人聲進來仍維持同一 groove——Billie Jean 主歌／副歌骨架幾乎不變。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
           kick: fourFloor16(8),
-          snare: backbeat16(8, ghostsEveryBar(8, [3, 5, 11, 13])),
+          snare: backbeat16(8, billieJeanGhosts(8)),
         }),
+        26,
       ),
       section(
         "3. 副歌 1（8 小節）",
-        "副歌可在 a 補 kick；第 8 小節小 fill 回主歌。",
+        "仍四落地；HH 可略開。第 8 小節小 fill 接回主歌。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8),
-          kick: concat(
-            ...Array.from({ length: 3 }, () =>
-              concat(
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"], [14, "x"]]),
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"]]),
-              ),
-            ),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [10, "x"], [12, "x"], [14, "x"]]),
-          ),
+          ride: hats8(8, 8),
+          kick: fourFloor16(8),
           snare: concat(
-            backbeat16(7),
+            backbeat16(7, billieJeanGhosts(7)),
             place(16, [[4, "X"], [10, "g"], [11, "g"], [12, "X"], [14, "g"]]),
           ),
         }),
+        56,
       ),
       section(
         "4. 主歌 2（8 小節）",
-        "回到四落地；與主歌 1 相同骨架。",
+        "回到 Intro／主歌同一四落地 groove。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
           kick: fourFloor16(8),
-          snare: backbeat16(8, ghostsEveryBar(8, [3, 5, 11, 13])),
+          snare: backbeat16(8, billieJeanGhosts(8)),
         }),
+        82,
       ),
       section(
         "5. 副歌 2（8 小節）",
-        "副歌再一次；尾小節可加 fill。",
+        "同副歌 1；保持 pocket，勿加花蓋過貝斯線。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8),
-          kick: concat(
-            ...Array.from({ length: 3 }, () =>
-              concat(
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"], [14, "x"]]),
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"]]),
-              ),
-            ),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [10, "x"], [12, "x"], [14, "x"]]),
-          ),
-          snare: concat(
-            backbeat16(7),
-            place(16, [[4, "X"], [10, "g"], [11, "g"], [12, "X"], [14, "g"], [15, "X"]]),
-          ),
+          ride: hats8(8, 8),
+          kick: fourFloor16(8),
+          snare: backbeat16(8, billieJeanGhosts(8)),
         }),
+        112,
       ),
       section(
-        "6. 間奏（8 小節）",
-        "前 6 小節維持 groove；後 2 小節十六分 snare fill。",
+        "6. Bridge 間奏（8 小節）",
+        "間奏仍鎖四落地；可把 HH 打開一點，最後兩小節 fill 回副歌。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: concat(hats8(6), place(16, [[0, "X"], [4, "x"], [8, "x"], [12, "x"]]), hats8(1)),
-          kick: concat(
-            fourFloor16(6),
-            place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            fourFloor16(1),
-          ),
+          ride: concat(hats16(6, [0, 16, 32, 48, 64, 80]), hats8(2)),
+          kick: fourFloor16(8),
           snare: concat(
-            backbeat16(6),
-            place(16, [[4, "X"], [6, "g"], [7, "X"], [8, "g"], [9, "X"], [10, "g"], [11, "X"], [12, "X"]]),
-            backbeat16(1),
+            backbeat16(6, billieJeanGhosts(6)),
+            place(16, [[4, "X"], [6, "g"], [7, "X"], [12, "X"], [14, "g"]]),
+            place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
+        140,
       ),
       section(
         "7. 副歌結束（8 小節）",
-        "最後副歌：穩在地板；尾可停在 snare。",
+        "outro 副歌循環：四落地到底；尾小節 Crash／停。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8),
-          kick: concat(
-            ...Array.from({ length: 3 }, () =>
-              concat(
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"], [14, "x"]]),
-                place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"]]),
-              ),
-            ),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [11, "x"], [12, "x"]]),
-            place(16, [[0, "x"], [4, "x"], [8, "x"], [12, "x"]]),
-          ),
-          snare: concat(backbeat16(7), place(16, [[4, "X"], [12, "X"], [14, "X"], [15, "X"]])),
+          ride: concat(hats8(7, 8), place(16, [[0, "X"], [8, "X"]])),
+          kick: concat(fourFloor16(7), place(16, [[0, "x"], [8, "x"]])),
+          snare: concat(backbeat16(7, billieJeanGhosts(7)), place(16, [[4, "X"], [12, "X"]])),
         }),
+        170,
       ),
     ],
   },
+
   "seven-nation-army": {
     youtubeId: "0J2QdDbelmY",
-    introSec: 7,
-    form: ["Intro riff", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "riff 再現"],
+    introSec: 0,
+    form: ["Intro riff", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Bridge", "riff／尾"],
     sections: [
       section(
         "1. Intro Riff（8 小節）",
-        "Kick 線＝riff：對準長短，再疊 2／4 snare。",
+        "Kick 線＝bass riff 長短；再疊穩 2／4 snare。先對死 riff 再加花。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            8,
-          ),
+          kick: sevenNationKick(8),
           snare: backbeat16(8),
         }),
+        7,
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "維持 riff kick；HH 可略收。",
+        "維持 riff kick；HH 可略收，人聲為主。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            8,
-          ),
+          kick: sevenNationKick(8),
           snare: backbeat16(8),
         }),
+        33,
       ),
       section(
         "3. 副歌 1（8 小節）",
-        "打開 HH（重音＝開）；kick 可加厚。",
+        "打開 HH；kick 可加厚一點，但仍跟著 riff。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats16(8, [0, 16, 32, 48, 64, 80, 96, 112]),
           kick: concat(
-            ...Array.from({ length: 3 }, () =>
+            ...Array.from({ length: 4 }, () =>
               concat(
                 place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
                 place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [13, "x"], [14, "x"]]),
               ),
             ),
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [4, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
           ),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        55,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -820,136 +837,195 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            8,
-          ),
+          kick: sevenNationKick(8),
           snare: backbeat16(8),
         }),
+        80,
       ),
       section(
         "5. 副歌 2（8 小節）",
-        "再爆發；尾可加 fill。",
+        "再打開；進 Bridge 前可小 fill。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats16(8, [0, 16, 32, 48, 64, 80, 96, 112]),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            8,
-          ),
-          snare: concat(backbeat16(7), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "X"]])),
+          kick: sevenNationKick(8),
+          snare: concat(backbeat16(7), place(16, [[4, "X"], [10, "X"], [12, "X"], [14, "g"]])),
         }),
+        100,
       ),
       section(
-        "6. Riff 再現／尾（8 小節）",
-        "回到 intro riff；最後兩小節收。",
+        "6. Bridge（8 小節）",
+        "中段張力：kick 更碎、HH 打開；對住結他／人聲堆疊。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: concat(hats8(6), cells(16), place(16, [[0, "X"], [8, "x"]])),
-          kick: concat(
-            repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]), 6),
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"]]),
-            place(16, [[0, "x"], [8, "x"]]),
-          ),
-          snare: concat(backbeat16(6), place(16, [[4, "X"], [12, "X"]]), place(16, [[4, "X"], [12, "X"], [15, "X"]])),
+          ride: hats16(8),
+          kick: repeat(place(16, [[0, "x"], [4, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]), 8),
+          snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
+        125,
+      ),
+      section(
+        "7. Riff／尾（8 小節）",
+        "回到 Intro riff；尾兩小節可打停。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: concat(hats8(6), place(16, [[0, "X"], [8, "X"]]), place(16, [[0, "X"]])),
+          kick: concat(sevenNationKick(6), place(16, [[0, "x"], [8, "x"]]), place(16, [[0, "x"]])),
+          snare: concat(backbeat16(6), place(16, [[4, "X"], [12, "X"]]), place(16, [[4, "X"]])),
+        }),
+        155,
       ),
     ],
   },
+
   "smells-like-teen-spirit": {
     youtubeId: "hTWKbfoikeg",
-    introSec: 5,
-    form: ["主歌 1", "副歌 1", "主歌 2", "副歌 2", "Solo／尾"],
+    introSec: 0,
+    form: ["結他 Intro", "鼓 Intro", "主歌", "Pre-Chorus", "副歌", "主歌 2", "Pre 2", "副歌 2", "Solo", "副歌／尾"],
     sections: [
       section(
-        "1. 主歌 1（收・8 小節）",
-        "安靜段：HH／四分輕打，kick 少，留白。",
+        "1. 結他 Intro（4 小節・無鼓）",
+        "原唱先 clean 結他 riff：此段完全休止，對住影片數 4 小節再進鼓。",
+        groove({
+          bars: 4,
+          perBeat: 4,
+          ride: rest16(4),
+          kick: rest16(4),
+          snare: rest16(4),
+        }),
+        0,
+      ),
+      section(
+        "2. 鼓 Intro（8 小節）",
+        "Grohl 進場：flam 感 fill 後直接副歌型 syncopated groove；四分 HH／Crash 在 1。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: repeat(Array.from({ length: 16 }, (_, i) => (i % 4 === 0 ? ("x" as const) : ("" as const))), 8),
-          kick: concat(
+          ride: quarters16(8, true),
+          kick: teenSpiritChorusKick(8),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
+        }),
+        7,
+      ),
+      section(
+        "3. 主歌（8 小節・收）",
+        "安靜段：閉合 HH 八分；snare 2／4；kick 簡單 1+3（偶數小節多一粒 &）。每 2 小節尾可開 HH。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: hats8(8),
+          kick: teenSpiritVerseKick(8),
+          snare: concat(
             ...Array.from({ length: 4 }, () =>
-              concat(place(16, [[0, "x"]]), place(16, [[0, "x"], [10, "x"]])),
+              concat(
+                place(16, [[4, "X"], [12, "X"]]),
+                place(16, [[4, "X"], [12, "X"], [15, "X"]]),
+              ),
             ),
           ),
-          snare: backbeat16(8),
         }),
+        25,
       ),
       section(
-        "2. 副歌 1（放・8 小節）",
-        "Crash 進副歌：kick 更密，動態一次到位。",
+        "4. Pre-Chorus（8 小節）",
+        "Hello hello：HH 略開、kick 加密；最後一小節 16 分 snare fill 撞進副歌。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, Array.from({ length: 16 }, (_, i) => i * 8)),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]),
-            8,
-          ),
-          snare: backbeat16(8, ghostsEveryBar(8, [7, 15])),
-        }),
-      ),
-      section(
-        "3. 主歌 2（收・8 小節）",
-        "再收回；進副歌前最後一小節 fill。",
-        groove({
-          bars: 8,
-          perBeat: 4,
-          ride: concat(
-            repeat(Array.from({ length: 16 }, (_, i) => (i % 4 === 0 ? ("x" as const) : ("" as const))), 7),
-            place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]),
-          ),
+          ride: hats16(7),
           kick: concat(
-            ...Array.from({ length: 3 }, () =>
-              concat(place(16, [[0, "x"]]), place(16, [[0, "x"]])),
-            ),
-            place(16, [[0, "x"]]),
-            place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]]),
+            teenSpiritVerseKick(6),
+            place(16, [[0, "x"], [4, "x"], [8, "x"], [10, "x"], [12, "x"], [14, "x"]]),
+            place(16, [[0, "x"], [4, "x"], [8, "x"], [12, "x"]]),
           ),
           snare: concat(
             backbeat16(7),
-            place(16, [[4, "X"], [6, "g"], [7, "X"], [8, "g"], [9, "X"], [10, "X"], [11, "g"], [12, "X"], [13, "X"], [14, "X"], [15, "X"]]),
+            place(16, [[0, "g"], [2, "g"], [4, "X"], [6, "g"], [8, "X"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
+        40,
       ),
       section(
-        "4. 副歌 2（放・8 小節）",
-        "再爆發；保持速度，不要越打越趕。",
+        "5. 副歌（8 小節・放）",
+        "爆點：Crash 在每小節 1；四分 HH；kick 用 Intro／副歌切分型。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, Array.from({ length: 16 }, (_, i) => i * 8)),
-          kick: repeat(
-            place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"], [14, "x"]]),
-            8,
+          ride: quarters16(8, true),
+          kick: teenSpiritChorusKick(8),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
+        }),
+        55,
+      ),
+      section(
+        "6. 主歌 2（8 小節・收）",
+        "再收回主歌 groove。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: hats8(8),
+          kick: teenSpiritVerseKick(8),
+          snare: backbeat16(8),
+        }),
+        85,
+      ),
+      section(
+        "7. Pre-Chorus 2（8 小節）",
+        "同 Pre-Chorus 推進；fill 進副歌。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: hats16(7),
+          kick: concat(teenSpiritVerseKick(7), place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]])),
+          snare: concat(
+            backbeat16(7),
+            place(16, [[4, "X"], [6, "X"], [8, "X"], [10, "g"], [12, "X"], [14, "X"]]),
           ),
+        }),
+        100,
+      ),
+      section(
+        "8. 副歌 2（8 小節・放）",
+        "再爆一次副歌 groove。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: quarters16(8, true),
+          kick: teenSpiritChorusKick(8),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 7])),
+        }),
+        115,
+      ),
+      section(
+        "9. Solo（8 小節）",
+        "結他 Solo 用副歌型重 groove 頂住。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: quarters16(8, true),
+          kick: teenSpiritChorusKick(8),
           snare: backbeat16(8, ghostsEveryBar(8, [7, 15])),
         }),
+        145,
       ),
       section(
-        "5. Solo／尾（8 小節）",
-        "Solo 段維持副歌厚度；最後兩小節大 fill 收。",
+        "10. 副歌／尾（8 小節）",
+        "最後副歌＋outro；尾兩小節可打停。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: concat(hats16(6, Array.from({ length: 12 }, (_, i) => i * 8)), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"], [8, "X"]])),
-          kick: concat(
-            repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 6),
-            place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [8, "x"]]),
-          ),
-          snare: concat(
-            backbeat16(6),
-            place(16, [[4, "X"], [6, "X"], [7, "g"], [8, "X"], [9, "g"], [10, "X"], [11, "X"], [12, "X"], [13, "X"], [14, "X"], [15, "X"]]),
-            place(16, [[4, "X"], [12, "X"], [15, "X"]]),
-          ),
+          ride: concat(quarters16(6, true), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"]])),
+          kick: concat(teenSpiritChorusKick(6), place(16, [[0, "x"], [8, "x"], [12, "x"]]), place(16, [[0, "x"]])),
+          snare: concat(backbeat16(6), place(16, [[4, "X"], [8, "X"], [12, "X"]]), place(16, [[4, "X"]])),
         }),
+        175,
       ),
     ],
   },
+
   "another-one-bites-the-dust": {
     youtubeId: "rY0WxgSXdEE",
     introSec: 0,
@@ -957,98 +1033,99 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
     sections: [
       section(
         "1. Intro Kick（8 小節）",
-        "先把 kick ostinato 對死；可先不加 snare。",
+        "經典 octave kick 線先出來；再疊 2／4 snare＋HH。對死這條 kick 就是整首歌。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 8),
-          snare: cells(128),
+          kick: bitesDustKick(8),
+          snare: backbeat16(8),
         }),
+        0,
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "同一 kick 線＋2／4 snare。",
+        "維持 kick 線；人聲進來動態略收。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          kick: bitesDustKick(8),
+          snare: backbeat16(8),
         }),
+        22,
       ),
       section(
         "3. 副歌 1（8 小節）",
-        "維持 kick DNA；HH 可略打開。",
+        "HH 可開；kick 線不變——這首歌靠同一條低音踢貫穿。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8, 16),
-          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8),
+          ride: hats8(8, 8),
+          kick: bitesDustKick(8),
+          snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        45,
       ),
       section(
         "4. 主歌 2（8 小節）",
-        "回到主歌厚度。",
+        "收回主歌。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          kick: bitesDustKick(8),
+          snare: backbeat16(8),
         }),
+        68,
       ),
       section(
         "5. 副歌 2（8 小節）",
-        "副歌再一次。",
+        "再打開。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8, 16),
-          kick: repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8),
+          ride: hats8(8, 8),
+          kick: bitesDustKick(8),
+          snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        90,
       ),
       section(
         "6. 間奏（8 小節）",
-        "間奏可強調 kick；尾 fill。",
+        "間奏仍鎖 kick 線；可加小 fill。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: concat(hats8(6), place(16, [[0, "X"], [8, "x"], [12, "x"]]), hats8(1)),
-          kick: concat(
-            repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 6),
-            place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]),
-          ),
-          snare: concat(backbeat16(6), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "X"]]), backbeat16(1)),
+          ride: hats16(8, [0, 32, 64, 96]),
+          kick: bitesDustKick(8),
+          snare: concat(backbeat16(7), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "g"]])),
         }),
+        115,
       ),
       section(
         "7. 副歌結束（8 小節）",
-        "最後副歌；尾停在 kick／snare。",
+        "outro 副歌；尾小節 Crash 收。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats8(8, 16),
-          kick: concat(
-            repeat(place(16, [[0, "x"], [8, "x"], [10, "x"], [13, "x"], [14, "x"]]), 7),
-            place(16, [[0, "x"], [8, "x"], [14, "x"]]),
-          ),
-          snare: concat(backbeat16(7), place(16, [[4, "X"], [12, "X"], [15, "X"]])),
+          ride: concat(hats8(7, 8), place(16, [[0, "X"]])),
+          kick: concat(bitesDustKick(7), place(16, [[0, "x"], [8, "x"]])),
+          snare: concat(backbeat16(7), place(16, [[4, "X"], [12, "X"]])),
         }),
+        140,
       ),
     ],
   },
+
   "uptown-funk": {
     youtubeId: "OPf0YbXqDm0",
-    introSec: 8,
+    introSec: 0,
     form: ["Intro hits", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Bridge", "副歌結束"],
     sections: [
       section(
         "1. Intro Hits（8 小節）",
-        "注意停頓與重音 hits；空白格也是譜。",
+        "原唱開頭重音 hits＋停頓；空白格也是譜——對死停拍再進 groove。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1065,10 +1142,11 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(2), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(1), backbeat16(2), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(1)),
         }),
+        8,
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "十六分 HH 要鬆；kick／snare 同步。",
+        "十六分 HH 要鬆；kick 落 1、a、& of 2、a of 3——原唱 funk pocket。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1076,6 +1154,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [3, "x"], [6, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
+        35,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1092,6 +1171,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(3), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(3), place(16, [[4, "X"], [8, "X"], [12, "X"], [14, "g"], [15, "X"]])),
         }),
+        60,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1103,6 +1183,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [3, "x"], [6, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [6, 14])),
         }),
+        90,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1119,6 +1200,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(3), place(16, [[0, "X"], [4, "X"], [12, "X"]]), backbeat16(3), backbeat16(1)),
         }),
+        115,
       ),
       section(
         "6. Bridge／停頓（8 小節）",
@@ -1135,6 +1217,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(4), cells(32), place(16, [[4, "X"], [8, "X"], [12, "X"], [14, "g"], [15, "X"]]), backbeat16(1)),
         }),
+        145,
       ),
       section(
         "7. 副歌結束（8 小節）",
@@ -1150,17 +1233,18 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(6), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"], [8, "X"]])),
         }),
+        175,
       ),
     ],
   },
   "we-will-rock-you": {
     youtubeId: "-tJYN-eG1zk",
     introSec: 0,
-    form: ["Stomp 開場", "人聲段", "結他段", "Stomp 再現", "結尾"],
+    form: ["Stomp 開場", "人聲段", "結他／全套鼓", "Stomp 再現", "結尾"],
     sections: [
       section(
         "1. Stomp 開場（8 小節）",
-        "kick-kick-snare 全程；練重量與穩定。",
+        "原唱經典：兩下腳踏（1 與 &）＋拍手（2／4）。無 HH／Ride——純身體節奏。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1168,10 +1252,11 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
           snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
         }),
+        0,
       ),
       section(
         "2. 人聲段（8 小節）",
-        "維持同一 stomp；勿搶人聲。",
+        "Buddy you're a boy… 仍鎖同一 stomp；重量穩、勿搶人聲。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1179,21 +1264,30 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
           snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
         }),
+        16,
       ),
       section(
-        "3. 結他段（8 小節）",
-        "仍是 stomp；可略加重。",
+        "3. 結他／全套鼓（8 小節）",
+        "原唱結他進來改打全套：Crash／HH 四分、kick 推進、2／4 snare——唔再係 stomp。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: cells(128),
-          kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
-          snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
+          ride: quarters16(8, true),
+          kick: concat(
+            ...Array.from({ length: 4 }, () =>
+              concat(
+                place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]),
+                place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"], [14, "x"]]),
+              ),
+            ),
+          ),
+          snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        68,
       ),
       section(
         "4. Stomp 再現（8 小節）",
-        "再現開場感。",
+        "We will, we will rock you——回到純 stomp。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1201,47 +1295,50 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 8),
           snare: repeat(place(16, [[4, "X"], [12, "X"]]), 8),
         }),
+        95,
       ),
       section(
         "5. 結尾（8 小節）",
-        "前 6 小節 stomp；後 2 小節加花收。",
+        "前 6 小節 stomp；後 2 小節全套 hits／Crash 收。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: cells(128),
+          ride: concat(cells(96), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"]])),
           kick: concat(
             repeat(place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"]]), 6),
-            place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"], [14, "x"]]),
-            place(16, [[0, "x"], [2, "x"], [8, "x"], [10, "x"], [12, "x"], [14, "x"]]),
+            place(16, [[0, "x"], [4, "x"], [8, "x"], [12, "x"]]),
+            place(16, [[0, "x"]]),
           ),
           snare: concat(
             repeat(place(16, [[4, "X"], [12, "X"]]), 6),
-            place(16, [[4, "X"], [12, "X"], [14, "X"], [15, "X"]]),
             place(16, [[4, "X"], [8, "X"], [12, "X"], [14, "X"], [15, "X"]]),
+            place(16, [[4, "X"], [12, "X"]]),
           ),
         }),
+        110,
       ),
     ],
   },
   "beat-it": {
     youtubeId: "oRdxUFDoQe0",
-    introSec: 10,
+    introSec: 0,
     form: ["Intro", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "Solo", "副歌尾"],
     sections: [
       section(
         "1. Intro（8 小節）",
-        "乾淨 pop-rock 進場。",
+        "原唱經典 disco-rock：HH 八分；kick 落 1、& of 2、a of 3；snare 穩 2／4。",
         groove({
           bars: 8,
           perBeat: 4,
           ride: hats8(8),
-          kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"]]), 8),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          kick: repeat(place(16, [[0, "x"], [6, "x"], [11, "x"]]), 8),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 14])),
         }),
+        10,
       ),
       section(
         "2. 主歌 1（8 小節）",
-        "kick 在 1 與 a／+ 變化；snare 要齊。",
+        "維持 Intro kick 線；偶數小節可多一粒 & of 3 推進。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1249,28 +1346,30 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: concat(
             ...Array.from({ length: 4 }, () =>
               concat(
-                place(16, [[0, "x"], [6, "x"], [10, "x"]]),
-                place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]),
+                place(16, [[0, "x"], [6, "x"], [11, "x"]]),
+                place(16, [[0, "x"], [6, "x"], [8, "x"], [11, "x"]]),
               ),
             ),
           ),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 14])),
         }),
+        38,
       ),
       section(
         "3. 副歌 1（8 小節）",
-        "可打開 HH；kick 稍密。",
+        "Beat it：HH 略開；kick 加厚但仍跟同一口袋。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, Array.from({ length: 32 }, (_, i) => i * 4 + 2)),
-          kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8),
+          ride: hats8(8, 8),
+          kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [11, "x"]]), 8),
+          snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        68,
       ),
       section(
         "4. 主歌 2（8 小節）",
-        "收回主歌。",
+        "收回主歌 kick 線。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1278,69 +1377,71 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: concat(
             ...Array.from({ length: 4 }, () =>
               concat(
-                place(16, [[0, "x"], [6, "x"], [10, "x"]]),
-                place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]),
+                place(16, [[0, "x"], [6, "x"], [11, "x"]]),
+                place(16, [[0, "x"], [6, "x"], [8, "x"], [11, "x"]]),
               ),
             ),
           ),
-          snare: backbeat16(8, ghostsEveryBar(8, [15])),
+          snare: backbeat16(8, ghostsEveryBar(8, [3, 14])),
         }),
+        95,
       ),
       section(
         "5. 副歌 2（8 小節）",
-        "副歌再打開。",
+        "副歌再打開；尾 fill 進 Solo。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: hats16(8, Array.from({ length: 32 }, (_, i) => i * 4 + 2)),
-          kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 8),
-          snare: backbeat16(8),
-        }),
-      ),
-      section(
-        "6. Solo 前＋Solo（8 小節）",
-        "前 4 小節 groove；後 4 小節含 fill 進 Solo。",
-        groove({
-          bars: 8,
-          perBeat: 4,
-          ride: concat(hats8(5), place(16, [[0, "X"], [8, "x"], [12, "x"]]), hats8(2)),
+          ride: concat(hats8(7, 8), place(16, [[0, "X"], [8, "x"], [12, "x"]])),
           kick: concat(
-            repeat(place(16, [[0, "x"], [6, "x"], [10, "x"]]), 5),
-            place(16, [[0, "x"], [8, "x"], [12, "x"]]),
-            repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 2),
+            repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [11, "x"]]), 7),
+            place(16, [[0, "x"], [8, "x"], [12, "x"], [14, "x"]]),
           ),
           snare: concat(
-            backbeat16(5),
-            place(16, [[4, "X"], [6, "g"], [7, "X"], [8, "g"], [9, "X"], [10, "g"], [11, "X"], [12, "X"], [13, "g"], [14, "X"], [15, "X"]]),
-            backbeat16(2),
+            backbeat16(7),
+            place(16, [[4, "X"], [6, "g"], [8, "X"], [10, "X"], [12, "X"], [14, "X"]]),
           ),
         }),
+        125,
+      ),
+      section(
+        "6. Solo（8 小節）",
+        "Van Halen Solo：用副歌厚度頂住；HH／Crash 打開。",
+        groove({
+          bars: 8,
+          perBeat: 4,
+          ride: quarters16(8, true),
+          kick: repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 8),
+          snare: backbeat16(8, ghostsEveryBar(8, [7, 15])),
+        }),
+        155,
       ),
       section(
         "7. 副歌尾（8 小節）",
-        "最後副歌；尾兩小節收。",
+        "最後副歌；尾兩小節 Crash 收。",
         groove({
           bars: 8,
           perBeat: 4,
-          ride: concat(hats16(6, Array.from({ length: 24 }, (_, i) => i * 4 + 2)), place(16, [[0, "X"], [8, "x"], [12, "x"]]), place(16, [[0, "X"]])),
+          ride: concat(hats8(6, 8), place(16, [[0, "X"], [4, "X"], [8, "X"], [12, "X"]]), place(16, [[0, "X"]])),
           kick: concat(
-            repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [14, "x"]]), 6),
+            repeat(place(16, [[0, "x"], [6, "x"], [10, "x"], [11, "x"]]), 6),
             place(16, [[0, "x"], [8, "x"], [12, "x"]]),
             place(16, [[0, "x"]]),
           ),
           snare: concat(backbeat16(6), place(16, [[4, "X"], [12, "X"], [14, "X"]]), place(16, [[4, "X"], [12, "X"]])),
         }),
+        185,
       ),
     ],
   },
   "qing-tian": {
     youtubeId: "DYptgVvkVLQ",
-    introSec: 12,
+    introSec: 0,
     form: ["前奏", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "間奏", "副歌／尾奏"],
     sections: [
       section(
         "1. 前奏（8 小節）",
-        "慢板十字節奏；柔、留空間。",
+        "慢板十字節奏；柔、留空間。2 拍 ghost、4 拍才重。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1362,6 +1463,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        12,
       ),
       section(
         "2. 主歌 1（8 小節）",
@@ -1387,6 +1489,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        45,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1405,6 +1508,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [10, "g"], [12, "X"], [14, "g"]])),
         }),
+        75,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1430,6 +1534,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             ),
           ),
         }),
+        110,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1448,6 +1553,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
+        140,
       ),
       section(
         "6. 間奏（8 小節）",
@@ -1468,6 +1574,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(7), place(16, [[4, "X"], [8, "g"], [10, "X"], [12, "X"], [14, "g"], [15, "X"]])),
         }),
+        175,
       ),
       section(
         "7. 副歌／尾奏（8 小節）",
@@ -1488,17 +1595,18 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: concat(backbeat16(6), place(16, [[4, "X"], [12, "X"]]), place(16, [[4, "g"], [12, "X"]])),
         }),
+        210,
       ),
     ],
   },
   "hai-kuo-tian-kong": {
     youtubeId: "V4GUy2EHMMs",
-    introSec: 18,
+    introSec: 0,
     form: ["前奏", "主歌 1", "副歌 1", "主歌 2", "副歌 2", "大尾"],
     sections: [
       section(
         "1. 前奏（8 小節）",
-        "克制 rock 進場。",
+        "克制 rock 進場；kick 只點 1＋3。",
         groove({
           bars: 8,
           perBeat: 4,
@@ -1506,6 +1614,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [8, "x"]]), 8),
           snare: backbeat16(8),
         }),
+        18,
       ),
       section(
         "2. 主歌 1（8 小節）",
@@ -1524,6 +1633,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
+        50,
       ),
       section(
         "3. 副歌 1（8 小節）",
@@ -1535,6 +1645,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        85,
       ),
       section(
         "4. 主歌 2（8 小節）",
@@ -1553,6 +1664,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           ),
           snare: backbeat16(8),
         }),
+        120,
       ),
       section(
         "5. 副歌 2（8 小節）",
@@ -1564,6 +1676,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
           kick: repeat(place(16, [[0, "x"], [6, "x"], [8, "x"], [10, "x"], [14, "x"]]), 8),
           snare: backbeat16(8, ghostsEveryBar(8, [15])),
         }),
+        155,
       ),
       section(
         "6. 大尾（8 小節）",
@@ -1587,6 +1700,7 @@ export const SONG_MEDIA: Record<string, SongMedia> = {
             place(16, [[4, "X"], [12, "X"], [15, "X"]]),
           ),
         }),
+        190,
       ),
     ],
   },

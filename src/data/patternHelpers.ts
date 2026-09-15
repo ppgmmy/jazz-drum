@@ -113,3 +113,79 @@ export function fourFloor16(bars = 4): Cell[] {
     i % 4 === 0 ? ("x" as const) : ("" as const),
   );
 }
+
+/** 休止（Intro 無鼓／數拍） */
+export function rest16(bars = 4): Cell[] {
+  return cells(bars * 16);
+}
+
+/** 四分 HH／Crash（副歌常用）；crashOn1 時每小節第 1 拍標 X */
+export function quarters16(bars = 4, crashOn1 = false): Cell[] {
+  const total = bars * 16;
+  return Array.from({ length: total }, (_, i) => {
+    if (i % 4 !== 0) return "" as const;
+    if (crashOn1 && i % 16 === 0) return "X" as const;
+    return "x" as const;
+  });
+}
+
+/**
+ * Billie Jean 經典 ghost：backbeat 前後 e／a 輕點
+ * （配合 four-on-the-floor + 2／4 snare）
+ */
+export function billieJeanGhosts(bars = 4): Array<[number, Cell]> {
+  const out: Array<[number, Cell]> = [];
+  for (let b = 0; b < bars; b++) {
+    const base = b * 16;
+    for (const o of [3, 6, 11, 14]) out.push([base + o, "g"]);
+  }
+  return out;
+}
+
+/**
+ * Teen Spirit 主歌 kick：簡單「We Will Rock You」感
+ * 1 + 3，偶數小節可多一粒 &
+ */
+export function teenSpiritVerseKick(bars = 4): Cell[] {
+  const parts: Cell[][] = [];
+  for (let b = 0; b < bars; b++) {
+    if (b % 2 === 0) parts.push(place(16, [[0, "x"], [8, "x"]]));
+    else parts.push(place(16, [[0, "x"], [8, "x"], [10, "x"]]));
+  }
+  return concat(...parts);
+}
+
+/**
+ * Teen Spirit 副歌／Intro 主 groove kick（切分、重 1）
+ * 近似 Grohl disco-rock：1、a、& of 2、3、a、& of 4
+ */
+export function teenSpiritChorusKick(bars = 4): Cell[] {
+  return repeat(
+    place(16, [
+      [0, "x"],
+      [3, "x"],
+      [6, "x"],
+      [8, "x"],
+      [11, "x"],
+      [14, "x"],
+    ]),
+    bars,
+  );
+}
+
+/** Seven Nation Army：kick 跟 bass riff 長短 */
+export function sevenNationKick(bars = 4): Cell[] {
+  // 1 — 2& 3 — 4 &（簡化對 riff）
+  return repeat(
+    place(16, [[0, "x"], [6, "x"], [8, "x"], [12, "x"], [14, "x"]]),
+    bars,
+  );
+}
+
+/** Another One Bites the Dust：經典 octave kick 線 */
+export function bitesDustKick(bars = 4): Cell[] {
+  return repeat(
+    place(16, [[0, "x"], [3, "x"], [6, "x"], [8, "x"], [11, "x"], [14, "x"]]),
+    bars,
+  );
+}
