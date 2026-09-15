@@ -60,9 +60,14 @@ export function SongSyncProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const claimPlayback = useCallback((ownerId: string) => {
-    if (ownerRef.current && ownerRef.current !== ownerId) {
-      const stop = stoppersRef.current.get(ownerRef.current);
-      stop?.();
+    // 停晒其他段（唔淨係上一個 owner），避免漏停
+    for (const [id, stop] of stoppersRef.current) {
+      if (id === ownerId) continue;
+      try {
+        stop();
+      } catch {
+        // ignore
+      }
     }
     ownerRef.current = ownerId;
   }, []);
@@ -70,7 +75,8 @@ export function SongSyncProvider({ children }: { children: ReactNode }) {
   const registerStopper = useCallback((ownerId: string, stop: Stopper) => {
     stoppersRef.current.set(ownerId, stop);
     return () => {
-      stoppersRef.current.delete(ownerId);
+      const current = stoppersRef.current.get(ownerId);
+      if (current === stop) stoppersRef.current.delete(ownerId);
       if (ownerRef.current === ownerId) ownerRef.current = null;
     };
   }, []);

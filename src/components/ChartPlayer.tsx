@@ -88,13 +88,15 @@ export function ChartPlayer({
     }
   };
 
+  const stopPlaybackRef = useRef(stopPlayback);
+  stopPlaybackRef.current = stopPlayback;
+
   useEffect(() => {
     if (!songSync) return;
+    // 穩定 wrapper：永遠 call 最新 stopPlayback，畀其他段 claim 時停自己
     return songSync.registerStopper(ownerId, () => {
-      stopPlayback({ pauseSong: false });
+      stopPlaybackRef.current({ pauseSong: false });
     });
-    // stopper 用 ref；掛載時註冊一次即可
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songSync, ownerId]);
 
   const ensureAudio = async () => {
@@ -154,8 +156,9 @@ export function ChartPlayer({
 
   const startPlayback = async () => {
     setError(null);
+    // 一撳即刻停其他段，唔好等 AudioContext
+    songSync?.claimPlayback(ownerId);
     try {
-      songSync?.claimPlayback(ownerId);
       const ctx = await ensureAudio();
       clearTimer();
       const startCell =
